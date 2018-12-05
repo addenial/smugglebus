@@ -83,6 +83,7 @@ By default, the payload task will attempt to execute "%appdata%\start.exe", whic
 
 
 The following is the execution flow:
+
 	1. Backdoor is injected
 		• Offline drive, "spoolsv.exe" is renamed to "spoolsv.exe.bak"
 		• Hacked spoolsv.exe is uploaded
