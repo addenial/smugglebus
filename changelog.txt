@@ -1,0 +1,34 @@
+
+	11/16/2018
+	----------
+	- Version 1.1
+		- Cleaned up smugglebus.py, defaulting to SERVICE IMPLANT payload for all OS versions
+		- Pulling additional SOFTWARE hive (@dekanfrus and @exodust)
+		- Updated decrypt.sh to include SOFTWARE 
+		- Added generate_payload.sh and 4 templates
+			[only template #3 will bypass Win Defender as of testing]
+		- Updated web-hosted-stage.txt
+		
+		
+	
+
+
+
+	
+	TODO
+	----
+	- Add function to search and copy sysprep config files - unattend.xml 
+		these files could contain local admin creds
+	- Add function to copy hiberfil.sys from Win OS root
+		this file could be several gigs, copy will take a while..
+		could allow us to pull domain creds from lsass
+		http://blog.gentilkiwi.com/securite/mimikatz/windbg-extension
+			^ UNABLE TO RECREATE (tested on Win7 box with no updates....)
+				Win10 added additional huffman encoding to the hiberfil.sys
+				hiber2dmp does not support			
+	- Investigate Windows Credential Manager Vault and pulling/decoding from offline OS
+		Would allow for access to application creds (IE, wifi?, etc.) 
+	- Add sickey keys hack
+		move c:\windows\system32\sethc.exe   c:\windows\system32\sethc.exe.bak
+		copy c:\windows\system32\cmd.exe    c:\windows\system32\sethc.exe 
+		reboot, hit shift x5 on login screen, get cmd running as SYSTEM without logging in :)

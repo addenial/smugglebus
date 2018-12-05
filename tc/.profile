@@ -34,4 +34,4 @@ TERMTYPE=`/usr/bin/tty`
 [ -e /tmp/.X11-unix/X0 ] || 
 startx
 )
-/home/tc/startup.sh
+sudo /home/tc/startup.sh
