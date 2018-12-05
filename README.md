@@ -79,7 +79,7 @@ Since pentesters often times will target machines onto which users rarely log in
 The service backdoor implant works by swapping a Windows service binary with attacker's binary. Use generate_payload.sh to create spoolsv.exe implant and choose a URL where web-hosted-stage.txt will be hosted. When executed, the web hosted stage will create two scheduled tasks via PowerShell: a payload task, and a clean-up task. Save the newly created spoolsv.exe in the "/home/tc/payload" folder. 
 
 
-By default, the payload task will attempt to execute "%appdata%\start.exe", which SmuggleBus uploads from "/home/tc/payload" folder to "C:\Windows\System32\config\systemprofile\AppData\Roaming\start.exe" (SYSTEM profile %appdata% folder). THIS IS YOUR REVERSE SHELL BINARY (Metasploit, Empire, Cobalt Strike, etc.) which could potentially get flagged by AV. Uploading a compiled binary and since scheduled task is being configured to execute a file that is already residing on disk is the perfered method to go undetected.
+By default, the payload task will attempt to execute "%appdata%\start.exe", which SmuggleBus uploads from "/home/tc/payload" folder to "C:\Windows\System32\config\systemprofile\AppData\Roaming\start.exe" (SYSTEM profile %appdata% folder). THIS IS YOUR REVERSE SHELL BINARY (Metasploit, Empire, Cobalt Strike, etc.) which could potentially get flagged by AV. Uploading a compiled binary and using a scheduled task to execute it directly from disk is the preferred method to go undetected.
 
 
 The following is the execution flow:
