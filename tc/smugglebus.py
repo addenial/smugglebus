@@ -154,7 +154,7 @@ if __name__=='__main__':
         hg.mountPartitions()
         hg.findSamSystem()
         hg.copySamSystem()
-        hg.implantService()
+        #hg.implantService()
         hg.cleanUp()
     else:
         print '\n [-] Error: check your basedir'
