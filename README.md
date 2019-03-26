@@ -99,22 +99,6 @@ The following is the execution flow:
 		• Service is started, resumes normal operation
 
 
-# Build Instructions Quick Reference
-Refer to wiki for detailed build instructions or download premade ISO from releases (link)
+# Build Instructions
+Refer to the project wiki (https://github.com/addenial/smugglebus/wiki/Building-SmuggleBus) for build instructions or  download premade ISO from the releases page (https://github.com/addenial/smugglebus/releases)
 
-1. Download Core Plus from http://www.tinycorelinux.net/downloads.html
-2. Install Tinycore to a USB flashdrive,
-    - Use Ext2 as the partition
-    - Select “Core Only” for the installation
-3. Mount the flash drive into a linux distribution
-4. Open boot/extlinux/extlinux.conf in an editior
-5. Copy your UUID from the last line and append home=UUID=”YOUR UUID” and opt=UUID=”YOUR UUID”. This should all be on one line
-    - Example: 
-    APPEND initrd=/boot/core.gz quiet norestore waitusb=5:UUID="a13c5174-bde8-48f2-ac19-d9a6b73bb7c5" tce=UUID="a13c5174-bde8-48f2-ac19-d9a6b73bb7c5" home=UUID="a13c5174-bde8-48f2-ac19-d9a6b73bb7c5" opt=UUID="a13c5174-bde8-48f2-ac19-d9a6b73bb7c5"
-6. Download Python, OpenSSL, and NTFS-3G tcz packages (python.tcz, openssl.tcz, ntfs-3g.tcz) from http://distro.ibiblio.org/tinycorelinux/8.x/x86/tcz/
-7. Place Python, OpenSSL, and NTFS-3G inside /tce/optional
-8. Edit OnBoot.lst and add the entries, separated by a new line:
-    - python.tcz 
-    - openssl.tcz
-    - ntfs-3g.tcz
-9. Overwrite tc folder with the one in github (/home/tc)
