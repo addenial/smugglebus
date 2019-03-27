@@ -38,7 +38,7 @@ When imaged, the following will reside in the SmuggleBus home folder under /home
 
 
 ## Encryption
-Using a combination of symmetric and asymmetric cryptography, files get encrypted prior being written to flashdrive storage. 
+To enable encryption, drop your public key under "/home/tc/public_key.pem". Using a combination of symmetric and asymmetric cryptography, captured registry hives will get encrypted prior being written to the flashdrive storage. 
 
 Setup:
 
