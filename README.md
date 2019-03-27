@@ -23,7 +23,7 @@ A typical attack flow would consist of the following:
 ## Operating System
 The SmuggleBus is built on Tiny Core Linux OS (http://distro.ibiblio.org/tinycorelinux), with only the essential packages loaded in. No networking is loaded to avoid tripping any Network Access Controls. 
 
-Refer to wiki for detailed build instructions or download premade ISO from releases.
+Refer to the project wiki (https://github.com/addenial/smugglebus/wiki/Building-SmuggleBus) for build instructions or  download premade ISO from the releases page (https://github.com/addenial/smugglebus/releases).
 
 When imaged, the following will reside in the SmuggleBus home folder under /home/tc/:
 
@@ -99,6 +99,5 @@ The following is the execution flow:
 		• Service is started, resumes normal operation
 
 
-# Build Instructions
-Refer to the project wiki (https://github.com/addenial/smugglebus/wiki/Building-SmuggleBus) for build instructions or  download premade ISO from the releases page (https://github.com/addenial/smugglebus/releases)
 
+Good luck, and hack the planet!
