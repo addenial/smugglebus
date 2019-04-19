@@ -36,9 +36,6 @@ nolink' >> /etc/dhcpcd.conf
 ##quire dhcp_server_identifier
 ##slaac private
 
-#prevent dnsmasq from breaking dns resolvers for wlan0
-echo 'DNSMASQ_EXCEPT=lo' >> /etc/default/dnsmasq
-
 echo 'Restarting networking'
 systemctl daemon-reload
 service dhcpcd restart
@@ -60,6 +57,9 @@ enable-tftp
 tftp-root=/tftpboot
 no-resolv
 bind-interfaces" > /etc/dnsmasq.conf
+
+#prevent dnsmasq from breaking dns resolvers for wlan0
+echo 'DNSMASQ_EXCEPT=lo' >> /etc/default/dnsmasq
 
 echo 'Starting PXE server!'
 service dnsmasq restart
