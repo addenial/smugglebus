@@ -76,7 +76,7 @@ The design goal of the SmuggleBus payload injection was to have minimal impact o
 Since pentesters often times will target machines onto which users rarely log into (conference room PCs, kiosks, etc.) the payload needs to execute prior to user logon with "NT AUTHORITY\SYSTEM" account. Due to security updates/enhancements of modern Windows Operating Systems, service implant technique is used for all flavors of Windows. 
 
 ### Service
-The service backdoor implant works by swapping a Windows service binary with attacker's binary. Use generate_payload.sh to create spoolsv.exe implant and choose a URL where web-hosted-stage.txt will be hosted. When executed, the web hosted stage will create two scheduled tasks via PowerShell: a payload task, and a clean-up task. Save the newly created spoolsv.exe in the "/home/tc/payload" folder. 
+The service backdoor implant works by swapping a Windows service binary with attacker's binary. Use generate_payload.sh to create spoolsv.exe implant and choose a URL where web-hosted-stage.txt will be hosted (leave URL blank when using stagless templates, for example TEMPLATE5-stageless.go does not require use of the web-hosted-stage file). When executed, the web hosted stage will create two scheduled tasks via PowerShell: a payload task, and a clean-up task. Save the newly created spoolsv.exe in the "/home/tc/payload" folder. 
 
 
 By default, the payload task will attempt to execute "%appdata%\start.exe", which SmuggleBus uploads from "/home/tc/payload" folder to "C:\Windows\System32\config\systemprofile\AppData\Roaming\start.exe" (SYSTEM profile %appdata% folder). THIS IS YOUR REVERSE SHELL BINARY (Metasploit, Empire, Cobalt Strike, etc.) which could potentially get flagged by AV. Uploading a compiled binary and using a scheduled task to execute it directly from disk is the preferred method to go undetected.
@@ -89,7 +89,7 @@ The following is the execution flow:
 		• Hacked spoolsv.exe is uploaded
 		• Reverse shell binary start.exe is uploaded
 	2. System reboots, hacked spoolsv.exe executes
-		• Configured to execute a web hosted PowerShell code that create two scheduled tasks
+		• Configured to execute a web hosted PowerShell code (or stageless embedded) that create two scheduled tasks
 	3. New Scheduled Task is created (payload)
 		• Executes start.exe as SYSTEM 
 	4. 2nd task is created (clean-up)
