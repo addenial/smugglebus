@@ -5,7 +5,7 @@ if [[ $# -eq 0 ]] ; then
 	exit 0
 fi
 
-echo Enter URL pointing to the stage file \(example - https://www.URL.com/web-hosted-stage.txt\)
+echo Enter URL pointing to the stage file \(example - https://www.URL.com/web-hosted-stage.txt\) leave blank if stageless template
 read url
 
 
