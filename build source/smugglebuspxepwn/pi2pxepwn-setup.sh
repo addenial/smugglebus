@@ -40,6 +40,8 @@ echo 'Restarting networking'
 systemctl daemon-reload
 service dhcpcd restart
 
+sleep 4
+
 echo 'Installing and setting up NFS'
 apt install nfs-kernel-server -y
 echo '/tftpboot/smugglebus *(rw,no_root_squash)' > /etc/exports
