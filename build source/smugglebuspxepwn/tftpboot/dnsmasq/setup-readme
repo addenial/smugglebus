@@ -1,0 +1,16 @@
+#edit the interfaces and assign static IP to eth0 interface
+vim /etc/network/interfaces
+auto eth0
+iface eth0 inet static
+address 10.0.0.69/24
+
+
+#restart service for it to get applied
+systemctl restart networking.service
+
+#start
+dnsmasq -C dnsmasq.conf -d
+
+
+#dont forget to have required services running
+service nfs-kernel-server start

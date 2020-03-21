@@ -1,0 +1,10 @@
+# initrd path is relative to pxe root (/tftpboot)
+# nfsroot ip is pxe server's address
+
+LABEL 21
+        MENU LABEL SmuggleBus
+        KERNEL /smugglebus/tce/boot/vmlinuz
+        APPEND initrd=/smugglebus/tce/boot/core.gz nfsmount=10.0.0.69:/tftpboot/smugglebus tftplist=10.0.0.69:/smugglebus/tce/onboot.lst tce=nfs home=nfs opt=nfs 
+        TEXT HELP
+        Boot SmuggleBus pxepwn
+ENDTEXT

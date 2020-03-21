@@ -1,0 +1,24 @@
+DEFAULT vesamenu.c32 
+TIMEOUT 600
+ONTIMEOUT BootLocal
+PROMPT 0
+MENU INCLUDE pxelinux.cfg/pxe.conf
+NOESCAPE 1
+LABEL BootLocal		
+		MENU LABEL BootLocal
+        KERNEL chain.c32
+        APPEND hd0 0
+        TEXT HELP
+        Boot to local hard disk
+        ENDTEXT
+MENU BEGIN SmuggleBus
+MENU TITLE SmuggleBus
+        LABEL Previous
+        MENU LABEL Previous Menu
+        TEXT HELP
+        Return to previous menu
+        ENDTEXT
+        MENU EXIT
+        MENU SEPARATOR
+        MENU INCLUDE smugglebus/smugglebus.menu
+MENU END
