@@ -21,6 +21,7 @@ class Drive:
     def get_fs(self):
         return self.fs
     def is_mounted(self):
+        #column doesn't exist in tc. other way to parse? 
         proc = subprocess.Popen("sudo mount | column -t", stdout=subprocess.PIPE, shell=True)
         (mounted_drives, err) = proc.communicate()
         mounted_drives = mounted_drives.decode('utf-8')     
@@ -137,14 +138,15 @@ def implant_malware():
 
 def pretty_print(drives):
     subprocess.call('cat assets/ascii_art', shell=True)
-    print("\n\n\t\t\t    *********************************************************************************************",end ="")
-    print("\n\t\t\t    ***********************************A TABLE OF ALL CONNECTED DEVICES**************************",end ="")
-    print("\n\t\t\t    *********************************************************************************************",end ="")
-    print("\n\t\t\t    *\t\tDrive Location\t\t\t  File System\t\t\tMounted\t\t*",end ="")
+    #making smaller to fit the screen
+    print("\n\n*************************************************************************",end ="")
+    print("\n*******************A TABLE OF ALL CONNECTED DEVICES**********************",end ="")
+    print("\n*************************************************************************",end ="")
+    print("\n    *\tDrive Location\tFile System\tMounted\t* ",end ="")
     for drive in drives:
         if len(drive.get_fs()) > 1:
-            print("\n\t\t\t    *\t\t  {}\t\t\t{}\t\t\t   {}\t\t*".format(drive.get_source(), drive.get_fs(), drive.is_mounted()), end="")
-    print("\n\t\t\t    *********************************************************************************************",end ="\n")
+            print("\n    *\t{}\t{}\t   {}\t* ".format(drive.get_source(), drive.get_fs(), drive.is_mounted()), end="")
+    print("\n*************************************************************************",end ="\n")
 
 
 def main():
