@@ -1,0 +1,6 @@
+
+#parse collected registry hives with impacket secretsdump.py tool
+#on raspberrypi install using
+#sudo apt install python-impacket
+
+impacket-secretsdump LOCAL -sam SAM -system SYSTEM -security SECURITY 
