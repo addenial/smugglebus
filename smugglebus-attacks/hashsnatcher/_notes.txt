@@ -4,3 +4,49 @@
 #sudo apt install python-impacket
 
 impacket-secretsdump LOCAL -sam SAM -system SYSTEM -security SECURITY 
+
+
+#suggested pw guessing dictionaries
+wget https://github.com/praetorian-code/Hob0Rules/raw/master/wordlists/rockyou.txt.gz
+#extract to plain txt file
+gunzip -d rockyou.txt.gz
+#also check out crackstation and crackstatin-human-only
+#https://crackstation.net/crackstation-wordlist-password-cracking-dictionary.htm
+
+
+#to install hashcat pw crack utility
+git clone https://github.com/hashcat/hashcat.git
+make
+make install
+#create txt file containing only NTLM part of the hash
+#example of NTLM hash for blank passwords LM-hash-part:NTLM-hash-part) 
+#AAD3B435B51404EEAAD3B435B51404EE:31D6CFE0D16AE931B73C59D7E0C089C0
+#to crack NT (in above examle 31D6CFE0D16AE931B73C59D7E0C089C0), drop in txt file
+#hashes.txt
+#-m option 1000 is NTLM hashes
+hashcat -m 1000 -r rules/d3ad0ne.rule hashes.txt dictionaries/rockyou.txt -o out.txt
+
+
+
+#on rasperrypi for quick pw guesses, john-the-ripper will get the job done
+git clone https://github.com/magnumripper/JohnTheRipper.git
+cd JohnTheRipper
+cd src
+./configure && make
+cd ../run
+
+./john --format=NT /usr/share/hashcat/hashcat/hashes.txt
+
+#default wordlist is builtin password.lst 
+#to specify alternatify, use
+./john --format=NT --wordlist=rockyou.txt hashes.txt
+
+#to see cracked NThash:plaintext results open john.pot file
+
+#to add hybrid dictionary and run all builtin rules
+./john --format=NT --rules:All --wordlist=password.lst /usr/share/hashcat/hashcat/hashes.txt
+
+#use to see cracked passwords, checks pot file
+./john --show --format=NT /usr/share/hashcat/hashcat/hashes.txt
+
+
