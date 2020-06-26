@@ -2,6 +2,11 @@
 #Windows registry hives SAM, SYSTEM, SECURITY, SOFTWARE are collected and saved for offline parsing. 
 #these registry hives can be parsed to capture NTLM hashed local account passwords. 
 #typically and by default these registry hives will reside in C:\Windows\System32\config directory. 
+#
+#https://docs.microsoft.com/en-us/windows/win32/sysinfo/registry-hives
+#https://support.microsoft.com/en-us/help/256986/windows-registry-information-for-advanced-users
+#https://docs.microsoft.com/en-us/previous-versions//cc750583(v=technet.10)?redirectedfrom=MSDN
+
 
 
 
