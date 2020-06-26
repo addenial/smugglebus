@@ -42,7 +42,7 @@ cd src
 ./configure && make
 cd ../run
 
-./john --format=NT /usr/share/hashcat/hashcat/hashes.txt
+./john --format=NT hashes.txt
 
 #default wordlist is builtin password.lst 
 #to specify alternatify, use
@@ -51,9 +51,9 @@ cd ../run
 #to see cracked NThash:plaintext results open john.pot file
 
 #to add hybrid dictionary and run all builtin rules
-./john --format=NT --rules:All --wordlist=password.lst /usr/share/hashcat/hashcat/hashes.txt
+./john --format=NT --rules:All --wordlist=password.lst hashes.txt
 
 #use to see cracked passwords, checks pot file
-./john --show --format=NT /usr/share/hashcat/hashcat/hashes.txt
+./john --show --format=NT hashes.txt
 
 
