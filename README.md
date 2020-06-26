@@ -1,7 +1,7 @@
 # SmuggleBus
 ![logo](logo.png)
 
-SmuggleBus is a USB bootable tool, built on barebones Linux, designed to aid penetration testers and red teamers performing physical social engineering exercises. 
+SmuggleBus is a USB and netboot/pxe bootable tool, built on barebones Linux, designed to aid penetration testers and red teamers performing physical social engineering exercises. 
 
 Upon obtaining physical premises access to the target organization, the SmuggleBus can be used to aid in collection of local credentials and implanting backdoors. This is accomplished by taking advantage of unencrypted system hard drives. 
 
@@ -21,9 +21,9 @@ A typical attack flow would consist of the following:
 
 
 ## Operating System
-The SmuggleBus is built on Tiny Core Linux OS (http://distro.ibiblio.org/tinycorelinux), with only the essential packages loaded in. No networking is loaded to avoid tripping any Network Access Controls. 
+The SmuggleBus is built on Tiny Core Linux OS (http://distro.ibiblio.org/tinycorelinux), with only the essential packages loaded in. 
 
-Refer to the project wiki (https://github.com/addenial/smugglebus/wiki/Building-SmuggleBus) for build instructions or  download premade ISO from the releases page (https://github.com/addenial/smugglebus/releases).
+Refer to the project wiki (https://github.com/addenial/smugglebus/wiki/Building-SmuggleBus) for build instructions or  download premade ISO (USB bootable only) from the releases page (https://github.com/addenial/smugglebus/releases).
 
 When imaged, the following will reside in the SmuggleBus home folder under /home/tc/:
 
