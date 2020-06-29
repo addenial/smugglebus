@@ -7,7 +7,9 @@
 #https://support.microsoft.com/en-us/help/256986/windows-registry-information-for-advanced-users
 #https://docs.microsoft.com/en-us/previous-versions//cc750583(v=technet.10)?redirectedfrom=MSDN
 
-
+#Windows drive is mounted with read-only
+#Example command:
+# ntfs-3g -o ro /dev/sdaX /mnt
 
 
 
