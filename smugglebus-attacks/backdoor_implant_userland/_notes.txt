@@ -16,3 +16,16 @@
 #
 #All users
 # C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\
+
+
+
+#
+#automating:
+#when running this attack, first ask if the payload 
+# should execute when specific user (aka are we targetting specific user?)
+# or should it execute whenever any user logs in. 
+#if targetting specific user, first list "C:\Users" directory
+# then ask which to drop into before unmounting. 
+#
+#copy payload from /home/tc/payload/
+#using "start.exe" for payload name during testing to be consistent. 
