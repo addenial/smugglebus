@@ -1,7 +1,17 @@
-
-
-
-#   
-#     appdata\roaming\microsoft\windows\start menu\programs\startup
+#backdoor_implant_userland.txt
+#Implant payload is dropped into specific user directory
+# which will execute when that specific user logs is.
+# The implant can use any extention and any filename. 
 #
+#Windows drive is mounted with read-write, which often 
+# will require deleting hibernation file and running ntfsfix.
+#Example commands:
+# ntfs-3g -o remove_hiberfil /dev/sdaX /mnt
+# ntfsfix /dev/sdaX
 
+
+#Specific user
+# C:\Users\{   username  }\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+#
+#All users
+# C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
