@@ -25,7 +25,7 @@
 # should execute when specific user (aka are we targetting specific user?)
 # or should it execute whenever any user logs in. 
 #if targetting specific user, first list "C:\Users" directory
-# then ask which to drop into before unmounting. 
+# then ask which folder to drop into before unmounting. 
 #
 #copy payload from /home/tc/payload/
 #using "start.exe" for payload name during testing to be consistent. 
