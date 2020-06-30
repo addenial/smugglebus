@@ -27,5 +27,5 @@
 #if targetting specific user, first list "C:\Users" directory
 # then ask which folder to drop into before unmounting. 
 #
-#copy payload from /home/tc/payload/
+#copy payload from /home/tc/payloads/
 #using "start.exe" for payload name during testing to be consistent. 
