@@ -1,0 +1,2 @@
+#will need root or sudo most likely, for example
+#sudo sh mount.sh
