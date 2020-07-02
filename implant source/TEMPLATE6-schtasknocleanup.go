@@ -23,6 +23,6 @@ func main(){
         time.Sleep(5 * time.Second)
         fmt.Printf("Time now %v\n", time.Now().Unix())
 
-	d := exec.Command("schtasks", "/run", "/tn","start")
+	d := exec.Command("schtasks", "/run", "/tn","start","/I")
 	d.Start()
 }       
