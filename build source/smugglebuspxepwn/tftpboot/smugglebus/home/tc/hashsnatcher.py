@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 
 
 # Author: Keenan Kunzelman
 # Description: Meant to be run on a linux bootable usb. Program scans 
@@ -211,29 +211,33 @@ def pretty_print(drives):
     # out useful data about the given drive.
 
     subprocess.call('cat assets/ascii_art', shell=True)
-    print('\n\n\t\t\t    *****************************************'
-            '****************************************************',
+    print('\n\n     *******************************************************'
+            '***************     ',
+    end ='')
+    print('\n     *******************A TABLE OF ALL CONNECTED'
+            ' DEVICES*******************', 
             end ='')
-    print('\n\t\t\t    ***********************************A TABLE'
-            ' OF ALL CONNECTED DEVICES**************************',
+    print('\n     *******************************************************'
+            '***************     ',
             end ='')
-    print('\n\t\t\t    *******************************************'
-            '**************************************************',
-            end ='')
-    print('\n\t\t\t    *\t\tDrive Location\t\t\t  File System\t\t\t'
-            'Mounted\t\t*',end ='')
+    print('\n     *\t\t Drive Location\t      File System\t'
+            'Mounted\t\t  *',end ='')
     for drive in drives:
-        if len(drive.get_fs()) > 6:
-            print('\n\t\t\t    *\t\t  {}\t\t\t{}\t\t\t   '
-                    '{}\t\t*'.format(drive.get_source(), 
+        if len(drive.get_source()) > 10:
+            print('\n     *\t\t   {}      {}\t  '
+                    '{}\t\t  *'.format(drive.get_source(), 
+                        drive.get_fs(), drive.is_mounted()), end='')
+
+        if len(drive.get_fs()) > 6 and len(drive.get_source()) < 10:
+            print('\n     *\t\t   {}\t      {}\t  '
+                    '{}\t\t  *'.format(drive.get_source(), 
                         drive.get_fs(), drive.is_mounted()), end='')
         elif len(drive.get_fs()) == 4:
-            print('\n\t\t\t    *\t\t  {}\t\t\t{}\t\t\t\t  '
-                    ' {}\t\t*'.format(drive.get_source(), 
-                        drive.get_fs(),
-                        drive.is_mounted()), end='')
-    print('\n\t\t\t    *******************************************'
-            '**************************************************',
+            print('\n     *  {}\t      {}\t  '
+                    '{}\t\t  *'.format(drive.get_source(), 
+                        drive.get_fs(), drive.is_mounted()), end='')
+    print('\n     *******************************************************'
+            '***************     ',
             end ='\n')
 
 
