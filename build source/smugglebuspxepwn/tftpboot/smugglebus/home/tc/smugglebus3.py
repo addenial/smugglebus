@@ -67,7 +67,7 @@ def mount_drive(drive):
     except FileExistsError:
         print('/mnt/windows exists, and will be used as a '
                 'mounting point')
-    subprocess.Popen('sudo mount -t ntfs-3g -o nls=utf8 {} '
+    subprocess.Popen('sudo ntfs-3g -o remove_hiberfile {} '
             '/mnt/windows'.format(drive.get_source()), shell=True)
     time.sleep(1)
 
@@ -249,6 +249,7 @@ def main():
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-xh', '--extract_hives', action='store_true')
     group.add_argument('-i', '--implant', action='store_true')
+    group.add_argument('-pp', '--pretty_print', action='store_true')
     args = parser.parse_args()
 
     # this grabs the raw text for the connected drives
@@ -258,13 +259,11 @@ def main():
     if args.extract_hives:
         if check_for_windrives(raw_drives):
             copy_winpayload()
+    if args.pretty_print:
+        pretty_print(conected_drives)
     elif args.implant:
         if check_for_windrives(raw_drives):
             implant_malware()
-        
-    elif not len(sys.argv) > 1:
-        #no cmd line arg was given so just print connected drives 
-        pretty_print(conected_drives)
     else:
         print('invalid flag')
 
