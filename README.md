@@ -1,6 +1,8 @@
 # SmuggleBus
 ![logo](logo.png)
 
+            ===  logo design credit  https://bridgetmiller.design/smugglebus
+
 SmuggleBus is a USB and netboot/pxe bootable tool, built on barebones Linux, designed to aid penetration testers and red teamers performing physical social engineering exercises. 
 
 Upon obtaining physical premises access to the target organization, the SmuggleBus can be used to aid in collection of local credentials and implanting backdoors. This is accomplished by taking advantage of unencrypted system hard drives. 
