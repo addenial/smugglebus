@@ -101,5 +101,24 @@ The following is the execution flow:
 		• Service is started, resumes normal operation
 
 
-
 Good luck, and hack the planet!
+
+
+
+# No USB ports to plug in? PXEPWN
+
+SmuggleBus can also be deployed through network pxe boot!
+
+https://github.com/addenial/smugglebus/tree/master/build%20source/smugglebuspxepwn
+
+Running pi2pxepwn-setup.sh on a fresh installation of <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian</a> will download and setup all packages needed for deploying SmuggleBusPXEPWN. 
+
+<img src="https://github.com/addenial/smugglebus/blob/master/build%20source/smugglebus/images/s7.png" width="350">
+
+In this attack mode, eth0 port on the raspberry pi will become the DHCP interface. Start by connecting the Ethernet cable from the target Windows box to raspberry pi eth0, and select network boot from BIOS. Loot (such as collected registry hives) will be saved on the pi through NFS. Using DNSMASQ for DHCP and TFTP. 
+
+
+
+
+
+
