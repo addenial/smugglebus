@@ -109,9 +109,11 @@ Good luck, and hack the planet!
 
 SmuggleBus can also be deployed through network pxe boot!
 
+Install script:
+https://raw.githubusercontent.com/addenial/smugglebus/master/build%20source/smugglebuspxepwn/pi4pxepwn-setup.sh
 https://github.com/addenial/smugglebus/tree/master/build%20source/smugglebuspxepwn
 
-Running pi2pxepwn-setup.sh on a fresh installation of <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian</a> will download and setup all packages needed for deploying SmuggleBusPXEPWN. 
+Running pi4pxepwn-setup.sh on a fresh installation of <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian</a> will download and setup all packages needed for deploying SmuggleBusPXEPWN. 
 
 <img src="https://github.com/addenial/smugglebus/blob/master/build%20source/smugglebus/images/s7.png" width="350">
 
