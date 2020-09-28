@@ -10,9 +10,9 @@ exit 1
 fi
 
 echo 'Downloading pxepwn source files...'
-wget https://github.com/addenial/smugglebus/raw/master/build%20source/smugglebuspxepwn/tftpboot2.7z 
+wget https://github.com/addenial/smugglebus/raw/master/build%20source/smugglebuspxepwn/tftpboot.7z 
 #version control..
-mv tftpboot2.7z tftpboot.7z
+#mv tftpboot2.7z tftpboot.7z
 
 
 echo 'Downloading 7z...'
