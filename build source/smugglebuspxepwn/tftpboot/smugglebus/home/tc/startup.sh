@@ -8,7 +8,7 @@ echo "Hello SmuggleBus!!"
 #/usr/local/bin/python /home/tc/smugglebus.py
 
 echo 'Running HashSnatcher?'
-/usr/local/bin/python3.4 /home/tc/hashsnatcher.py
+/usr/local/bin/python3.4 /home/tc/smugglebus3.py -pd
 
 #echo "Done. Powering off"
 #sudo poweroff
