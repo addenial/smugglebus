@@ -39,12 +39,7 @@ interface eth0
 static ip_address=10.0.0.69/24
 nolink' > /etc/dhcpcd.conf
 
-
-echo 'Restarting networking'
-systemctl daemon-reload
-service dhcpcd restart
-
-sleep 4
+sleep 3
 
 echo 'Installing and setting up NFS'
 apt install nfs-kernel-server -y
@@ -54,6 +49,7 @@ service nfs-kernel-server restart
 
 echo 'Installing and setting up DNSMASQ'
 apt install dnsmasq -y
+
 sleep 1
 
 echo "interface=eth0
@@ -67,6 +63,15 @@ no-resolv
 
 #prevent dnsmasq from breaking dns resolvers for wlan0
 echo 'DNSMASQ_EXCEPT=lo' >> /etc/default/dnsmasq
+
+
+echo 'Restarting networking'
+systemctl daemon-reload
+service dhcpcd restart
+
+
+sleep 4
+
 
 echo 'Starting PXE server!'
 service dnsmasq restart
