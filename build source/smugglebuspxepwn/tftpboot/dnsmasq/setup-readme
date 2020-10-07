@@ -14,3 +14,6 @@ dnsmasq -C dnsmasq.conf -d
 
 #dont forget to have required services running
 service nfs-kernel-server start
+
+
+#tail -f /var/log/syslog
