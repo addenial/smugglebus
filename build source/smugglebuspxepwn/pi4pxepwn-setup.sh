@@ -9,6 +9,10 @@ echo "This script must be run as root"
 exit 1
 fi
 
+
+echo 'updating repos...'
+apt update -y
+
 echo 'Downloading pxepwn source files...'
 wget https://github.com/addenial/smugglebus/raw/master/build%20source/smugglebuspxepwn/tftpboot.7z 
 #version control..
