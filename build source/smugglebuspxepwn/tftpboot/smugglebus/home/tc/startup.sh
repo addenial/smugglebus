@@ -4,11 +4,14 @@
 #no need to call sudo again when running python
 
 echo "Hello SmuggleBus!!"
-#sudo python smugglebus.py
-#/usr/local/bin/python /home/tc/smugglebus.py
+
+#legacy USB python2.7 version
+#python smugglebus.py
+#/usr/local/bin/python /home/tc/smugglebus-legacy.py
 
 echo 'Running HashSnatcher?'
-/usr/local/bin/python3.4 /home/tc/smugglebus3.py -pd
+/usr/local/bin/python3.6 /home/tc/smugglebus3.py -pd
 
 #echo "Done. Powering off"
 #sudo poweroff
+
