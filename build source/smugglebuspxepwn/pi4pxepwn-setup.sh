@@ -13,10 +13,11 @@ fi
 echo 'updating repos...'
 apt update -y
 
-echo 'Downloading pxepwn source files...'
+echo 'Downloading pxepwn tftp source files...'
 wget https://github.com/addenial/smugglebus/raw/master/build%20source/smugglebuspxepwn/tftpboot.7z 
-#version control..
-#mv tftpboot2.7z tftpboot.7z
+
+echo 'Downloading tce packages, local web hosted loaded on boot...'
+wget https://github.com/addenial/smugglebus/raw/master/build%20source/smugglebuspxepwn/x86.7z
 
 
 echo 'Downloading 7z...'
@@ -27,6 +28,15 @@ sleep 1
 7z x tftpboot.7z -o/
 chown -hR pi:pi /tftpboot/
 chmod -R 775 /tftpboot/
+
+
+echo 'Downloading apache web server...'
+apt install apache2 -y
+sleep 3
+echo 'Extracting web hosted tinycore packages..'
+7z x x86.7z -o/var/www/html/
+sleep 1
+
 
 echo 'Seting up static IP for eth0 interface'
 #echo static ip and dhcpd defaults:
