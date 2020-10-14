@@ -60,6 +60,8 @@ echo "interface=eth0
 dhcp-range=10.0.0.101,10.0.0.200,6h
 dhcp-host=`cat /sys/class/net/eth0/address`,10.0.0.69,raspberrypi,infinite
 dhcp-boot=pxelinux.0
+#dhcp-match=set:efi-x86_64,option:client-arch,7
+#dhcp-boot=tag:efi-x86_64,bootx64.efi
 enable-tftp
 tftp-root=/tftpboot
 no-resolv
