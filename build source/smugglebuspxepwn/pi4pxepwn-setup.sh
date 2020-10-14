@@ -63,6 +63,9 @@ dhcp-boot=pxelinux.0
 enable-tftp
 tftp-root=/tftpboot
 no-resolv
+log-queries
+log-dhcp
+server=1.1.1.1
 #bind-interfaces" > /etc/dnsmasq.conf
 
 #prevent dnsmasq from breaking dns resolvers for wlan0
