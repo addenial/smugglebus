@@ -18,6 +18,7 @@ wget https://github.com/addenial/smugglebus/raw/master/build%20source/smugglebus
 
 echo 'Downloading tce packages, local web hosted loaded on boot...'
 wget https://github.com/addenial/smugglebus/raw/master/build%20source/smugglebuspxepwn/x86.7z
+wget https://github.com/addenial/smugglebus/raw/master/build%20source/smugglebuspxepwn/x86_64.7z
 
 
 echo 'Downloading 7z...'
@@ -35,6 +36,8 @@ apt install apache2 -y
 sleep 3
 echo 'Extracting web hosted tinycore packages..'
 7z x x86.7z -o/var/www/html/
+sleep 1
+7z x x86_64.7z -o/var/www/html/
 sleep 1
 
 
