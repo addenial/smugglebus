@@ -32,10 +32,10 @@ When imaged, the following will reside in the SmuggleBus home folder under /home
 | File | Description |
 | --- | --- |
 |startup.sh| Executed on boot. Launches smugglebus.py script, restarts the system upon completion.|
-|smugglebus.py|	Python code that will identify, mount the Windows OS partition, export the hashes, and setup the backdoor. (Based on HashGrab v2.0 by s3my0n, under GNU General Public License)|
-|public_key.pem| Public key used to encrypt the exported hives prior to writing to flash memory. Optional, encrypts if file exists. |
+|smugglebus3.py| python3 latest version ~~ |
+|smugglebus-legacy.py|	Python code that will identify, mount the Windows OS partition, export the hashes, and setup the backdoor. (Based on HashGrab v2.0 by s3my0n, under GNU General Public License) python2.7|
+|public_key.pem| -legacy version - Public key used to encrypt the exported hives prior to writing to flash memory. Optional, encrypts if file exists. |
 |payload| Placeholder location for the backdoor implant files (spoolsv.exe and start.exe)|
-|reged|	Registry editor, export and import tool. (*Placeholder, not used in current version. Part of chntpw, the Offline Windows Password Editor, under GNU Lesser General Public License https://github.com/rescatux/chntpw)|
 |.profile| Used to Launch startup.sh when TinyCore is fully loaded|
 
 

@@ -35,3 +35,4 @@ TERMTYPE=`/usr/bin/tty`
 startx
 )
 sudo /home/tc/startup.sh
+
