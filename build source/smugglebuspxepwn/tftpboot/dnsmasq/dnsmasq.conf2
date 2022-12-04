@@ -1,0 +1,18 @@
+interface=eth1
+dhcp-range=10.0.0.101,10.0.0.200,6h
+dhcp-host=00:13:37:a7:2e:db,10.0.0.69,pishare,infinite
+#Legacy BIOS
+dhcp-match=set:bios,option:client-arch,0
+#64 bit x86 EFI
+dhcp-match=set:efi-x86_64,option:client-arch,7
+#dhcp-boot=pxelinux.0
+dhcp-boot=tag:bios,"pxelinux.0"
+dhcp-boot=tag:efi-x86_64,"bootx64.efi"
+#
+enable-tftp
+tftp-root=/tftpboot
+no-resolv
+log-queries
+log-dhcp
+server=1.1.1.1
+#bind-interfaces
