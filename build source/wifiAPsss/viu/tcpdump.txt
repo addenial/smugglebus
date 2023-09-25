@@ -1,0 +1,9 @@
+
+tcpdump -i any
+
+
+tcpdump -i wlan2
+
+
+tcpdump -i eth0 -vv -w passive.pcap
+tcpdump -i any -vv -w passive.pcap
