@@ -1,0 +1,163 @@
+~==
+
+
+
+#dependency...
+## sudo apt install screen -y
+## sudo apt install hostapd -y
+## sudo apt install dnsmasq -y
+
+###sudo apt install dnsutils -y
+
+
+
+#sudo crontab -e
+#
+#//
+#
+#//append
+#
+#@reboot bash /home/pi/ile.sh
+#
+###
+#sudo chmod a+x /home/pi/ile.sh
+#
+#//may require service start--
+#
+#   sudo systemctl status cron.service
+#   sudo systemctl enable cron.service
+
+
+
+sleep 1
+sudo ifconfig wlan1 down
+#sudo ifconfig wlan2 down
+sleep 1
+
+
+
+#enable internet sharing-
+#assuming wlan0 is connected to wireless AP with internet access
+sleep 2
+sysctl -w net.ipv4.ip_forward=1
+iptables -P FORWARD ACCEPT
+iptables --table nat -A POSTROUTING -o wlan0 -j MASQUERADE
+#..nexts line scratch if using wlan1 as internet link.
+#iptables --table nat -A POSTROUTING -o wlan1 -j MASQUERADE
+sleep 1
+
+
+######cat start-wlan1.sh
+sleep 1
+sudo ifconfig wlan1 down
+sudo ifconfig wlan1 10.9.9.69 netmask 255.255.255.0 up
+
+sleep 5
+
+
+#fixd issu needed this here,,
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo iptables -P FORWARD ACCEPT
+sudo iptables --table nat -A POSTROUTING -o wlan0 -j MASQUERADE
+sleep 2
+
+
+#sudo screen -dmS wifiis bash -c "sudo bash /home/pi/wifiAPsss/AP/rougg_ap_start_wifi.sh"
+sudo screen -dmS wifiis bash -c "sudo hostapd /home/pi/hostapd.conf"
+
+#hostapd /home/pi/hostapd.conf
+
+#cat /home/pi/hostapd.conf
+#interface=wlan1
+#driver=nl80211
+#ssid=wifi1
+#channel=7
+
+
+
+
+
+#########
+###sudo service dnsmasq status 
+
+pi@pishare:~ $ cat /etc/dnsmasq.conf
+
+#interface=eth0
+#dhcp-range=eth0,10.0.0.101,10.0.0.200,6h
+
+interface=wlan1
+dhcp-range=wlan1,10.9.9.101,10.9.9.200,6h
+
+listen-address=127.0.0.1,10.9.9.69
+dhcp-host=f4:f2:6d:1c:fc:68,10.9.9.69,pivid,infinite
+
+server=1.1.1.1
+no-resolv
+#enable-tftp
+#tftp-root=/tftpboot
+log-queries
+log-dhcp
+#bind-interfaces
+
+##Legacy BIOS
+#dhcp-match=set:bios,option:client-arch,0
+##64 bit x86 EFI
+#dhcp-match=set:efi-x86_64,option:client-arch,7
+#dhcp-boot=tag:bios,"pxelinux.0"
+#dhcp-boot=tag:efi-x86_64,"bootx64.efi"
+
+===
+##fixxsss,, 
+==...forgot ..
+
+##echo in
+cat /etc/dhcpcd.conf
+
+
+echo 'hostname
+clientid
+persistent
+option rapid_commit
+option domain_name_servers, domain_name, domain_search, host_name 
+option classless_static_routes
+option interface_mtu
+require dhcp_server_identifier
+slaac private
+interface wlan1
+static ip_address=10.9.9.69/24
+nolink' > /etc/dhcpcd.conf 
+
+
+
+#..may potentially need next line- 
+##prevent dnsmasq from breaking dns resolvers for wlan0 
+echo 'DNSMASQ_EXCEPT=lo' >> /etc/default/dnsmasq 
+
+========================================
+
+##cat sho-all-clients.sh
+cat /var/log/syslog | grep -a DHCPACK | cut -d" " -f 8,9,10 | sort -V | uniq
+
+
+
+##cat sho-leases.sh
+cat /var/lib/misc/dnsmasq.leases
+
+chmod +x ./*.sh
+
+==========
+
+iwlist wlan1 scanning
+iwlist wlan1 scanning | grep ESSID
+
+
+
+
+
+
+
+uploo 
+https://github.com/addenial/smugglebus/tree/master/build%20source/wifiAPsss
+
+
+
