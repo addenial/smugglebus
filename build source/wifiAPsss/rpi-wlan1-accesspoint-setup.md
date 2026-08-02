@@ -76,7 +76,7 @@ channel=6
 wmm_enabled=0
 auth_algs=1
 wpa=2
-wpa_passphrase=monkeyrobot
+wpa_passphrase=abcd
 wpa_key_mgmt=WPA-PSK
 rsn_pairwise=CCMP
 ```
